@@ -30,12 +30,12 @@ public class Telemetry {
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
-        SignalLogger.start();
-
-        /* Set up the module state Mechanism2d telemetry */
-        for (int i = 0; i < 4; ++i) {
-            SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
-        }
+//        SignalLogger.start();
+//
+//        /* Set up the module state Mechanism2d telemetry */
+//        for (int i = 0; i < 4; ++i) {
+//            SmartDashboard.putData("Module " + i, moduleMechanisms[i]);
+//        }
     }
 
     /* What to publish over networktables for telemetry */
@@ -62,68 +62,70 @@ public class Telemetry {
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
 
     /* Mechanisms to represent the swerve module states */
-    private final Mechanism2d[] m_moduleMechanisms = new Mechanism2d[] {
+    private final Mechanism2d[] moduleMechanisms = new Mechanism2d[] {
             new Mechanism2d(1, 1),
             new Mechanism2d(1, 1),
             new Mechanism2d(1, 1),
             new Mechanism2d(1, 1),
     };
     /* A direction and length changing ligament for speed representation */
-    private final MechanismLigament2d[] m_moduleSpeeds = new MechanismLigament2d[] {
-            m_moduleMechanisms[0].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-            m_moduleMechanisms[1].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-            m_moduleMechanisms[2].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-            m_moduleMechanisms[3].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
+    private final MechanismLigament2d[] moduleSpeeds = new MechanismLigament2d[] {
+            moduleMechanisms[0].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
+            moduleMechanisms[1].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
+            moduleMechanisms[2].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
+            moduleMechanisms[3].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
     };
     /* A direction changing and length constant ligament for module direction */
-    private final MechanismLigament2d[] m_moduleDirections = new MechanismLigament2d[] {
-            m_moduleMechanisms[0].getRoot("RootDirection", 0.5, 0.5)
+    private final MechanismLigament2d[] moduleDirections = new MechanismLigament2d[] {
+            moduleMechanisms[0].getRoot("RootDirection", 0.5, 0.5)
                     .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-            m_moduleMechanisms[1].getRoot("RootDirection", 0.5, 0.5)
+            moduleMechanisms[1].getRoot("RootDirection", 0.5, 0.5)
                     .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-            m_moduleMechanisms[2].getRoot("RootDirection", 0.5, 0.5)
+            moduleMechanisms[2].getRoot("RootDirection", 0.5, 0.5)
                     .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-            m_moduleMechanisms[3].getRoot("RootDirection", 0.5, 0.5)
+            moduleMechanisms[3].getRoot("RootDirection", 0.5, 0.5)
                     .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
     };
 
-    private final double[] m_poseArray = new double[3];
+    private final double[] poseArray = new double[3];
 
     /**
      * Accept the swerve drive state and telemeterize it to SmartDashboard and
      * SignalLogger.
      */
     public void telemeterize(SwerveDriveState state) {
-        /* Telemeterize the swerve drive state */
-        drivePose.set(state.Pose);
-        driveSpeeds.set(state.Speeds);
-        driveModuleStates.set(state.ModuleStates);
-        driveModuleTargets.set(state.ModuleTargets);
-        driveModulePositions.set(state.ModulePositions);
-        driveTimestamp.set(state.Timestamp);
-        driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
+//        /* Telemeterize the swerve drive state */
+//        drivePose.set(state.Pose);
+//        driveSpeeds.set(state.Speeds);
+//        driveModuleStates.set(state.ModuleStates);
+//        driveModuleTargets.set(state.ModuleTargets);
+//        driveModulePositions.set(state.ModulePositions);
+//        driveTimestamp.set(state.Timestamp);
+//        driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
+//
+//        /* Also write to log file */
+//        SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
+//        SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
+//        SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
+//        SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
+//        SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
+//        SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+//
+//        /* Telemeterize the pose to a Field2d */
+//        fieldTypePub.set("Field2d");
+//
+//        poseArray[0] = state.Pose.getX();
+//        poseArray[1] = state.Pose.getY();
+//        poseArray[2] = state.Pose.getRotation().getDegrees();
+//        fieldPub.set(poseArray);
+//
+//        /* Telemeterize each module state to a Mechanism2d */
+//        for (int i = 0; i < 4; ++i) {
+//            moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
+//            moduleDirections[i].setAngle(state.ModuleStates[i].angle);
+//            moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
+//        }
 
-        /* Also write to log file */
-        SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
-        SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
-        SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
-        SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
-        SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
-        SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
-        /* Telemeterize the pose to a Field2d */
-        fieldTypePub.set("Field2d");
-
-        m_poseArray[0] = state.Pose.getX();
-        m_poseArray[1] = state.Pose.getY();
-        m_poseArray[2] = state.Pose.getRotation().getDegrees();
-        fieldPub.set(m_poseArray);
-
-        /* Telemeterize each module state to a Mechanism2d */
-        for (int i = 0; i < 4; ++i) {
-            m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
-            m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-            m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
-        }
     }
 }
