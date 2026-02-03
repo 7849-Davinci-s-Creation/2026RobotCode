@@ -28,18 +28,23 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
 //        timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
+
+        robotContainer.robotPeriodic();
     }
 
     @Override
     public void disabledInit() {
+        robotContainer.disabledInit();
     }
 
     @Override
     public void disabledPeriodic() {
+        robotContainer.disabledPeriodic();
     }
 
     @Override
     public void disabledExit() {
+        robotContainer.disabledExit();
     }
 
     @Override
@@ -49,14 +54,18 @@ public class Robot extends TimedRobot {
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(autonomousCommand);
         }
+
+        robotContainer.autonomousInit();
     }
 
     @Override
     public void autonomousPeriodic() {
+        robotContainer.autonomousPeriodic();
     }
 
     @Override
     public void autonomousExit() {
+        robotContainer.autonomousExit();
     }
 
     @Override
@@ -64,30 +73,38 @@ public class Robot extends TimedRobot {
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(autonomousCommand);
         }
+
+        robotContainer.teleopInit();
     }
 
     @Override
     public void teleopPeriodic() {
+        robotContainer.teleopPeriodic();
     }
 
     @Override
     public void teleopExit() {
+        robotContainer.teleopExit();
     }
 
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
+        robotContainer.testInit();
     }
 
     @Override
     public void testPeriodic() {
+        robotContainer.testPeriodic();
     }
 
     @Override
     public void testExit() {
+        robotContainer.testExit();
     }
 
     @Override
     public void simulationPeriodic() {
+        robotContainer.simulationPeriodic();
     }
 }

@@ -18,8 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import lib.RobotMethods;
 
-public class RobotContainer {
+public class RobotContainer implements RobotMethods {
     private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final CommandXboxController joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
@@ -78,5 +79,75 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return null;
+    }
+
+    @Override
+    public void robotPeriodic() {
+
+    }
+
+    @Override
+    public void disabledInit() {
+
+    }
+
+    @Override
+    public void disabledPeriodic() {
+
+    }
+
+    @Override
+    public void disabledExit() {
+
+    }
+
+    @Override
+    public void autonomousInit() {
+
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+
+    }
+
+    @Override
+    public void autonomousExit() {
+
+    }
+
+    @Override
+    public void teleopInit() {
+
+    }
+
+    @Override
+    public void teleopPeriodic() {
+
+    }
+
+    @Override
+    public void teleopExit() {
+
+    }
+
+    @Override
+    public void testInit() {
+
+    }
+
+    @Override
+    public void testPeriodic() {
+
+    }
+
+    @Override
+    public void testExit() {
+
+    }
+
+    @Override
+    public void simulationPeriodic() {
+
     }
 }
