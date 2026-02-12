@@ -20,6 +20,10 @@ public final class Constants {
 
     public static final class Operator {
         public static final int DRIVER_CONTROLLER_PORT = 1;
+        public static final double SLIGHT_CREEP_NERF_DRIVE = 1;
+        public static final double SLIGHT_CREEP_NERF_ROTATE = 1;
+        public static final double MAJOR_CREEP_NERF_DRIVE = 0.5;
+        public static final double MAJOR_CREEP_NERF_ROTATE = 0.5;
     }
 
 }

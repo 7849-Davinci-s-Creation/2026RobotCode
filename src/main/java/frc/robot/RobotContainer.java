@@ -7,6 +7,10 @@ package frc.robot;
 import static frc.robot.Constants.DriveTrain.MAX_ANGULAR_RATE;
 import static frc.robot.Constants.DriveTrain.MAX_SPEED;
 import static frc.robot.Constants.Operator.DRIVER_CONTROLLER_PORT;
+import static frc.robot.Constants.Operator.MAJOR_CREEP_NERF_DRIVE;
+import static frc.robot.Constants.Operator.MAJOR_CREEP_NERF_ROTATE;
+import static frc.robot.Constants.Operator.SLIGHT_CREEP_NERF_DRIVE;
+import static frc.robot.Constants.Operator.SLIGHT_CREEP_NERF_ROTATE;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -46,12 +50,13 @@ public class RobotContainer implements RobotMethods {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED) // Drive forward with
-                                // negative Y
-                                // (forward)
-                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED) // Drive left with negative X (left)
-                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE) // Drive counterclockwise with
-                        // negative X (left)
+                drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED) // Drive forward
+                                                                                                    // with
+                        // negative Y
+                        // (forward)
+                        .withVelocityY(-joystick.getLeftX() * MAX_SPEED) // Drive left with negative X (left)
+                        .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE) // Drive counterclockwise with
+                // negative X (left)
                 ));
 
         // Idle while the robot is disabled. This ensures the configured
@@ -66,15 +71,50 @@ public class RobotContainer implements RobotMethods {
         joystick.b().whileTrue(drivetrain.applyRequest(
                 () -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
-//        // Run SysId routines when holding back/start and X/Y.
-//        // Note that each routine should be run exactly once in a single log.
-//        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-//        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-//        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-//        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // // Run SysId routines when holding back/start and X/Y.
+        // // Note that each routine should be run exactly once in a single log.
+        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        joystick.leftTrigger().whileTrue(
+                // Drivetrain will execute this command periodically
+                drivetrain.applyRequest(
+                        () -> drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED * SLIGHT_CREEP_NERF_DRIVE) // Drive
+                                                                                                             // forward
+                                                                                                             // with
+                                // negative Y
+                                // (forward)
+                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED * SLIGHT_CREEP_NERF_DRIVE) // Drive left
+                                                                                                          // with
+                                                                                                          // negative X
+                                                                                                          // (left)
+                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE * SLIGHT_CREEP_NERF_ROTATE)) // Drive
+                                                                                                                         // counterclockwise
+                                                                                                                         // with
+        // negative X (left)
+        );
+                joystick.rightTrigger().whileTrue(
+                // Drivetrain will execute this command periodically
+                drivetrain.applyRequest(
+                        () -> drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED * MAJOR_CREEP_NERF_DRIVE) // Drive
+                                                                                                             // forward
+                                                                                                             // with
+                                // negative Y
+                                // (forward)
+                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED * MAJOR_CREEP_NERF_DRIVE) // Drive left
+                                                                                                          // with
+                                                                                                          // negative X
+                                                                                                          // (left)
+                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE * MAJOR_CREEP_NERF_ROTATE)) // Drive
+                                                                                                                         // counterclockwise
+                                                                                                                         // with
+        // negative X (left)
+        );
+        joystick.leftTrigger().whileTrue(drivetrain.applyRequest(() -> brake));
     }
 
     public Command getAutonomousCommand() {
