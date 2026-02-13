@@ -5,10 +5,9 @@ import lib.NiceSubsytem;
 
 public class Shooter extends SubsystemBase implements NiceSubsytem {
 
-
     @Override
     public void initialize() {
-        
+
     }
-    
+
 }

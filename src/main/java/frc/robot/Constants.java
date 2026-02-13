@@ -7,9 +7,12 @@ import static edu.wpi.first.units.Units.*;
 
 public final class Constants {
     public static final class DriveTrain {
-        public static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
+        public static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts
+                                                                                                   // desired top
         // speed
-        public static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+        public static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a
+                                                                                                        // rotation per
+                                                                                                        // second
         // max angular velocity
 
         /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
