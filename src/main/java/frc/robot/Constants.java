@@ -43,6 +43,8 @@ public final class Constants {
     }
 
     public static final class Intake {
-
+        // FIND THE CAN IDS WHEN WE GET THE ROBOT WORKING
+        public static final int INTAKEMOTOR1_CANID = 3;
+        public static final int INTAKEMOTOR2_CANID = 4;
     }
 }
