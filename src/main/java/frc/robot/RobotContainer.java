@@ -15,17 +15,23 @@ import static frc.robot.Constants.Operator.SLIGHT_CREEP_NERF_ROTATE;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.*;
 import lib.RobotMethods;
 
-public class RobotContainer implements RobotMethods {
+public final class RobotContainer implements RobotMethods {
         private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+        private final Climber climber = Climber.getInstance();
+        private final Indexer indexer = Indexer.getInstance();
+        private final Intake intake = Intake.getInstance();
+        private final Vision vision = Vision.getInstance();
 
         private final CommandXboxController joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
 
@@ -38,16 +44,22 @@ public class RobotContainer implements RobotMethods {
         private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
         private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-        private final Telemetry logger = new Telemetry(MAX_SPEED);
+        private final SendableChooser<Command> autoChooser;
 
         public RobotContainer() {
+                drivetrain.initialize();
+                climber.initialize();
+                indexer.initialize();
+                intake.initialize();
+                vision.initialize();
+
                 configureDefault();
                 configureBindings();
+
+                autoChooser = AutoBuilder.buildAutoChooser();
         }
 
         private void configureDefault() {
-                drivetrain.registerTelemetry(logger::telemeterize);
-
                 // Note that X is defined as forward according to WPILib convention,
                 // and Y is defined as to the left according to WPILib convention.
                 drivetrain.setDefaultCommand(
@@ -135,7 +147,7 @@ public class RobotContainer implements RobotMethods {
         }
 
         public Command getAutonomousCommand() {
-                return null;
+                return autoChooser.getSelected();
         }
 
         @Override
