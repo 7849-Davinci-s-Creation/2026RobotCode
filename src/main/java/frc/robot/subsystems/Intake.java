@@ -10,12 +10,10 @@ import lib.NiceSubsytem;
 
 public final class Intake extends SubsystemBase implements NiceSubsytem {
     private static Intake instance;
-    private final SparkMax intakeMotor1;
-    private final SparkMax intakeMotor2;
+
 
     private Intake() {
-        intakeMotor1 = new SparkMax(INTAKEMOTOR1_CANID, MotorType.kBrushed);
-        intakeMotor2 = new SparkMax(INTAKEMOTOR2_CANID, MotorType.kBrushless);
+
     };
 
     public static Intake getInstance() {
@@ -28,22 +26,19 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
 
     public Runnable intake() {
         return () -> {
-            intakeMotor1.set(0.5);
-            intakeMotor2.set(0.5);
+
         };
     }
 
     public Runnable outake() {
         return () -> {
-            intakeMotor1.set(-0.15);
-            intakeMotor2.set(-0.15);
+
         };
     }
 
     public Runnable stopIntake() {
         return () -> {
-            intakeMotor1.set(0);
-            intakeMotor2.set(0);
+
         };
     }
 
