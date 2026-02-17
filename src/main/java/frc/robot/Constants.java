@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
 
 import static edu.wpi.first.units.Units.*;
@@ -46,5 +47,18 @@ public final class Constants {
         // FIND THE CAN IDS WHEN WE GET THE ROBOT WORKING
         public static final int INTAKEMOTOR1_CANID = 3;
         public static final int INTAKEMOTOR2_CANID = 4;
+    }
+
+    public static final class Vision {
+        public static final String CAMERA_NAME = "CHANGE_ME";
+        public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0);
+        public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+    }
+
+    public static final class FieldConstants {
+        // find these
+        public static final int BLUE_CENTER_HUB_TARGET_ID = 0;
+
+        public static final double APRILTAG_HUB_HEIGHTS = 0;
     }
 }

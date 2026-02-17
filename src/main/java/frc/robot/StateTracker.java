@@ -5,7 +5,7 @@ public final class StateTracker {
     public static ClimberState currentClimberState = ClimberState.STORED;
     public static ElevatorState currentElevatorState = ElevatorState.IDLE;
     public static IntakeState currentIntakeState = IntakeState.STORED;
-    public static IndexerState currentIndexerState = IndexerState.OFF;
+    public static IndexerState currentIndexerState = IndexerState.BOTH_OFF;
 
     public static void defaultShooterState() {
         currentShooterState = ShooterState.OFF;
@@ -24,7 +24,7 @@ public final class StateTracker {
     }
 
     public static void defaultIndexerState() {
-        currentIndexerState = IndexerState.OFF;
+        currentIndexerState = IndexerState.BOTH_OFF;
     }
 
     enum ShooterState {
@@ -55,7 +55,8 @@ public final class StateTracker {
     }
 
     enum IndexerState {
-        ON,
-        OFF
+        STAGE1_ON_STAGE2_OFF,
+        BOTH_ON,
+        BOTH_OFF
     }
 }

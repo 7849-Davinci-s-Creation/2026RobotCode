@@ -18,6 +18,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -25,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import lib.RobotMethods;
+
+import javax.swing.plaf.nimbus.State;
 
 public final class RobotContainer implements RobotMethods {
     private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -152,6 +155,7 @@ public final class RobotContainer implements RobotMethods {
 
     @Override
     public void robotPeriodic() {
+        SmartDashboard.putData("Auto", autoChooser);
 
     }
 

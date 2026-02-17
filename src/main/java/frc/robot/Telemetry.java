@@ -141,5 +141,8 @@ public final class Telemetry {
                 // MaxSpeed));
                 // }
 
+                SmartDashboard.putString("Current Shooter Mode", StateTracker.currentShooterState.toString());
+                SmartDashboard.putString("Current Intake Mode", StateTracker.currentIntakeState.toString());
+                SmartDashboard.putString("Current Indexer Mode", StateTracker.currentIndexerState.toString());
         }
 }
