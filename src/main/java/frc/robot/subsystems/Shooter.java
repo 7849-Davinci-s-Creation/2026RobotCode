@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,7 +30,10 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         left = new TalonFX(Constants.Shooter.LEFT_KRAKEN_CANID);
         right = new TalonFX(Constants.Shooter.RIGHT_KRAKEN_CANID);
 
-        final TalonFXConfiguration config = new TalonFXConfiguration();
+        final TalonFXConfiguration config =
+                new TalonFXConfiguration()
+                        .withMotorOutput(
+                                new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
 
         final Slot0Configs shooterConfigs = new Slot0Configs()
                 .withKP(Constants.Shooter.P)

@@ -32,9 +32,11 @@ public final class Constants {
     }
 
     public static final class Shooter {
+        // set these
         public static final int LEFT_KRAKEN_CANID = 0;
         public static final int RIGHT_KRAKEN_CANID = 0;
 
+        // find these
         public static final double P = 0;
         public static final double I = 0;
         public static final double D = 0;
@@ -56,13 +58,14 @@ public final class Constants {
     }
 
     public static final class Vision {
+        // set and find these
         public static final String CAMERA_NAME = "CHANGE_ME";
         public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0);
         public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
     }
 
     public static final class FieldConstants {
-        // find these
+        // find all april tags you will be aiming at
         public static final int BLUE_CENTER_HUB_TARGET_ID = 0;
 
         public static final double APRILTAG_HUB_HEIGHTS = 0;
