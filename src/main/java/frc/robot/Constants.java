@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
 
+import java.util.HashMap;
+
 import static edu.wpi.first.units.Units.*;
 
 public final class Constants {
@@ -69,5 +71,14 @@ public final class Constants {
         public static final int BLUE_CENTER_HUB_TARGET_ID = 0;
 
         public static final double APRILTAG_HUB_HEIGHTS = 0;
+
+        public static final HashMap<Double, Double> centerTagRpms = new HashMap<>();
+        public static final HashMap<Double, Rotation2d> centerOffSetTag = new HashMap<>();
+        public static final HashMap<Double, Rotation2d> leftSideTag = new HashMap<>();
+        public static final HashMap<Double, Rotation2d> rightSideTag = new HashMap<>();
+
+        static {
+
+        }
     }
 }
