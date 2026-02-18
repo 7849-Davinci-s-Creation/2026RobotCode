@@ -32,7 +32,15 @@ public final class Constants {
     }
 
     public static final class Shooter {
+        public static final int LEFT_KRAKEN_CANID = 0;
+        public static final int RIGHT_KRAKEN_CANID = 0;
 
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+        public static final double S = 0;
+        public static final double V = 0;
+        public static final double FF = 0;
     }
 
     public static final class Climber {
