@@ -50,7 +50,8 @@ public final class Constants {
     }
 
     public static final class Indexer {
-
+        public static final int STAGE1_MOTOR_PORT = 0;
+        public static final int STAGE2_MOTOR_PORT = 0;
     }
 
     public static final class Intake {
