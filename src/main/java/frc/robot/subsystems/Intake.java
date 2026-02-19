@@ -7,10 +7,14 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.StateTracker;
 import lib.NiceSubsytem;
+
+import static edu.wpi.first.units.Units.Degrees;
 
 public final class Intake extends SubsystemBase implements NiceSubsytem {
     private static Intake instance;
@@ -64,8 +68,8 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
             return;
         }
 
-        final PositionVoltage voltage = new PositionVoltage(1).withSlot(0);
-        pivotMotor.setControl(voltage.withPosition(0));
+        final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
+        pivotMotor.setControl(voltage);
     }
 
     public void retract() {
@@ -73,8 +77,8 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
             return;
         }
 
-        final PositionVoltage voltage = new PositionVoltage(1).withSlot(0);
-        pivotMotor.setControl(voltage.withPosition(0));
+        final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
+        pivotMotor.setControl(voltage);
     }
 
     @Override

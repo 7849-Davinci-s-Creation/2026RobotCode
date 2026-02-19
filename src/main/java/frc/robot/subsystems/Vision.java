@@ -71,7 +71,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         return toAimAt;
     }
 
-    public double calculateDistanceFromHubTarget(DriverStation.Alliance robotAlliance) {
+    public double calculateDistanceFromHubTarget() {
         var results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {

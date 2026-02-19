@@ -27,14 +27,13 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import lib.RobotMethods;
 
-import javax.swing.plaf.nimbus.State;
-
 public final class RobotContainer implements RobotMethods {
     private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     private final Climber climber = Climber.getInstance();
     private final Indexer indexer = Indexer.getInstance();
     private final Intake intake = Intake.getInstance();
     private final Vision vision = Vision.getInstance();
+    private final Shooter shooter = Shooter.getInstance();
 
     private final CommandXboxController joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
 
@@ -55,6 +54,7 @@ public final class RobotContainer implements RobotMethods {
         indexer.initialize();
         intake.initialize();
         vision.initialize();
+        shooter.initialize();
 
         configureDefault();
         configureBindings();
