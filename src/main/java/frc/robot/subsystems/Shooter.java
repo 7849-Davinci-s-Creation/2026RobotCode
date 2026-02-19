@@ -69,7 +69,8 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
     public double getVelocityFromTagDistance(int tagId, double distance) {
         switch (tagId) {
             case Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID -> {
-                return Constants.FieldConstants.centerTagRpms.get(distance);
+                // check the distances we are at and return the rpm for the bounds
+
             }
 
         }

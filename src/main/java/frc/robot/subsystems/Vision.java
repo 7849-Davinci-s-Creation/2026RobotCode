@@ -31,7 +31,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         lastCalculatedRotation = Rotation2d.fromDegrees(180);
     }
 
-    public Rotation2d calculateRobotOffsetToTargetCenter(Rotation2d robotYaw, DriverStation.Alliance robotAlliance) {
+    public Rotation2d calculateRobotOffsetToTargetCenter(Rotation2d robotYaw) {
         var results = camera.getAllUnreadResults();
         if (results.isEmpty()) {
             return lastCalculatedRotation;
@@ -42,23 +42,33 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         }
 
         for (PhotonTrackedTarget target : result.getTargets()) {
-            if (target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID) {
-                double targetYaw = robotYaw.getDegrees() - target.getYaw();
 
-                targetYaw = ((targetYaw + 180) % 360) - 180;
-
-                Rotation2d toAimAt = Rotation2d.fromDegrees(targetYaw);
-
-                SmartDashboard.putNumber("Aiming to: ", toAimAt.getDegrees());
-                SmartDashboard.putNumber("Tag Yaw: ", target.getYaw());
-
-                lastCalculatedRotation = toAimAt;
-
-                return toAimAt;
+            if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)) {
+                if (target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID) {
+                    return calculate(target, robotYaw);
+                }
             }
+
+            // check for other tags on red side
+
         }
 
         return lastCalculatedRotation;
+    }
+
+    private Rotation2d calculate(PhotonTrackedTarget target, Rotation2d robotYaw) {
+        double targetYaw = robotYaw.getDegrees() - target.getYaw();
+
+        targetYaw = ((targetYaw + 180) % 360) - 180;
+
+        Rotation2d toAimAt = Rotation2d.fromDegrees(targetYaw);
+
+        SmartDashboard.putNumber("Aiming to: ", toAimAt.getDegrees());
+        SmartDashboard.putNumber("Tag Yaw: ", target.getYaw());
+
+        lastCalculatedRotation = toAimAt;
+
+        return toAimAt;
     }
 
     public double calculateDistanceFromHubTarget(DriverStation.Alliance robotAlliance) {

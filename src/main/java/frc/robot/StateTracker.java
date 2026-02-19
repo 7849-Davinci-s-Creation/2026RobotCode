@@ -27,19 +27,19 @@ public final class StateTracker {
         currentIndexerState = IndexerState.BOTH_OFF;
     }
 
-    enum ShooterState {
+    public enum ShooterState {
         OFF,
         REVING,
         AT_SPEED,
         SLOWING_DOWN
     }
 
-    enum ClimberState {
+    public enum ClimberState {
         STORED,
         DEPLOYED
     }
 
-    enum ElevatorState {
+    public enum ElevatorState {
         IDLE,
         ZEROING,
         RAISING,
@@ -47,14 +47,14 @@ public final class StateTracker {
         AT_ZERO
     }
 
-    enum IntakeState {
+    public enum IntakeState {
         STORED,
         EXTENDING,
         EXTENDED,
         CONTRACTING
     }
 
-    enum IndexerState {
+    public enum IndexerState {
         STAGE1_ON_STAGE2_OFF,
         BOTH_ON,
         BOTH_OFF
