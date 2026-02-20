@@ -17,6 +17,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,7 +49,11 @@ public final class RobotContainer implements RobotMethods {
 
     private final SendableChooser<Command> autoChooser;
 
+    private final Timer timer = new Timer();
+
     public RobotContainer() {
+        timer.start();
+
         drivetrain.initialize();
         climber.initialize();
         indexer.initialize();
@@ -153,10 +158,18 @@ public final class RobotContainer implements RobotMethods {
         return autoChooser.getSelected();
     }
 
+    public void registerNamedCommands() {
+
+    }
+
     @Override
     public void robotPeriodic() {
         SmartDashboard.putData("Auto", autoChooser);
 
+        // periodically call garbage collector
+        if (timer.advanceIfElapsed(5)) {
+            System.gc();
+        }
     }
 
     @Override

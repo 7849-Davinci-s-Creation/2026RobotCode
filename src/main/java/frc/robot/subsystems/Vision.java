@@ -41,15 +41,33 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
             return lastCalculatedRotation;
         }
 
-        for (PhotonTrackedTarget target : result.getTargets()) {
+        final PhotonTrackedTarget target = result.getBestTarget();
 
-            if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)) {
-                if (target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID) {
-                    return calculate(target, robotYaw);
-                }
+        if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)) {
+
+            if (target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.BLUE_RIGHT_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.BLUE_OFF_CENTER_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.BLUE_LEFT_HUB_TARGET_ID
+            ) {
+
+                return calculate(target, robotYaw);
+
             }
 
-            // check for other tags on red side
+        }
+
+        if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
+
+            if (target.getFiducialId() == Constants.FieldConstants.RED_CENTER_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.RED_LEFT_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.RED_RIGHT_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.RED_OFF_CENTER_HUB_TARGET_ID
+            ) {
+
+                return calculate(target, robotYaw);
+
+            }
 
         }
 
@@ -63,12 +81,49 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
         Rotation2d toAimAt = Rotation2d.fromDegrees(targetYaw);
 
-        SmartDashboard.putNumber("Aiming to: ", toAimAt.getDegrees());
-        SmartDashboard.putNumber("Tag Yaw: ", target.getYaw());
+        SmartDashboard.putString("Aiming to: ", getTargetNameFromID(target.getFiducialId()));
 
         lastCalculatedRotation = toAimAt;
 
         return toAimAt;
+    }
+
+    private String getTargetNameFromID(int id) {
+        switch (id) {
+            case Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID -> {
+                return "Blue Center";
+            }
+
+            case Constants.FieldConstants.BLUE_RIGHT_HUB_TARGET_ID -> {
+                return "Blue Right";
+            }
+
+            case Constants.FieldConstants.BLUE_OFF_CENTER_HUB_TARGET_ID -> {
+                return "Blue Off Center";
+            }
+
+            case Constants.FieldConstants.BLUE_LEFT_HUB_TARGET_ID -> {
+                return "Blue Left";
+            }
+
+            case Constants.FieldConstants.RED_CENTER_HUB_TARGET_ID -> {
+                return "Red Center";
+            }
+
+            case Constants.FieldConstants.RED_RIGHT_HUB_TARGET_ID -> {
+                return "Red Right";
+            }
+
+            case Constants.FieldConstants.RED_OFF_CENTER_HUB_TARGET_ID -> {
+                return "Red Off Center";
+            }
+
+            case Constants.FieldConstants.RED_LEFT_HUB_TARGET_ID -> {
+                return "Red Left";
+            }
+        }
+
+        return "None";
     }
 
     public double calculateDistanceFromHubTarget() {
@@ -90,6 +145,45 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
                         Constants.FieldConstants.APRILTAG_HUB_HEIGHTS, // target height
                         Constants.Vision.CAMERA_PITCH_RADIANS,
                         Units.degreesToRadians(target.getPitch()));
+            }
+
+        }
+
+        return 0;
+    }
+
+    public double getVelocityFromTagDistance(int tagId, double distance) {
+        switch (tagId) {
+            case Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID -> {
+                // check the distances we are at and return the rpm for the bounds
+            }
+
+            case Constants.FieldConstants.BLUE_RIGHT_HUB_TARGET_ID -> {
+
+            }
+
+            case Constants.FieldConstants.BLUE_OFF_CENTER_HUB_TARGET_ID -> {
+
+            }
+
+            case Constants.FieldConstants.BLUE_LEFT_HUB_TARGET_ID -> {
+
+            }
+
+            case Constants.FieldConstants.RED_CENTER_HUB_TARGET_ID -> {
+
+            }
+
+            case Constants.FieldConstants.RED_RIGHT_HUB_TARGET_ID -> {
+
+            }
+
+            case Constants.FieldConstants.RED_OFF_CENTER_HUB_TARGET_ID -> {
+
+            }
+
+            case Constants.FieldConstants.RED_LEFT_HUB_TARGET_ID -> {
+
             }
 
         }
