@@ -63,6 +63,7 @@ public final class RobotContainer implements RobotMethods {
 
         configureDefault();
         configureBindings();
+        registerNamedCommands();
 
         autoChooser = AutoBuilder.buildAutoChooser();
     }
