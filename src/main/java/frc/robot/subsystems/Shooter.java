@@ -40,7 +40,8 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
                 .withKI(Constants.Shooter.I)
                 .withKD(Constants.Shooter.D)
                 .withKS(Constants.Shooter.S)
-                .withKV(Constants.Shooter.V);
+                .withKV(Constants.Shooter.V)
+                .withKA(Constants.Shooter.A);
 
         left.clearStickyFaults();
         right.clearStickyFaults();
@@ -54,8 +55,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
 
     public void setVelocity(double rpm) {
         final VelocityVoltage request = new VelocityVoltage(rpm)
-                .withSlot(0)
-                .withFeedForward(Constants.Shooter.FF);
+                .withSlot(0);
 
         left.setControl(request);
         right.setControl(request);

@@ -42,7 +42,7 @@ public final class Constants {
         public static final double D = 0;
         public static final double S = 0;
         public static final double V = 0;
-        public static final double FF = 0;
+        public static final double A = 0;
     }
 
     public static final class Climber {
