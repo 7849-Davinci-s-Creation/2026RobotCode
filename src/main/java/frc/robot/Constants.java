@@ -85,6 +85,6 @@ public final class Constants {
         public static final int RED_CENTER_HUB_TARGET_ID = 10;
         public static final int RED_RIGHT_HUB_TARGET_ID = 11;
 
-        public static final double APRILTAG_HUB_HEIGHTS = 0;
+        public static final double APRILTAG_HUB_HEIGHTS_METERS = 1.1557;
     }
 }

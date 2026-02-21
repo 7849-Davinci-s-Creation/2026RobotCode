@@ -30,10 +30,9 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         left = new TalonFX(Constants.Shooter.LEFT_KRAKEN_CANID);
         right = new TalonFX(Constants.Shooter.RIGHT_KRAKEN_CANID);
 
-        final TalonFXConfiguration config =
-                new TalonFXConfiguration()
-                        .withMotorOutput(
-                                new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
+        final TalonFXConfiguration config = new TalonFXConfiguration()
+                .withMotorOutput(
+                        new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
 
         final Slot0Configs shooterConfigs = new Slot0Configs()
                 .withKP(Constants.Shooter.P)

@@ -46,10 +46,9 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)) {
 
             if (target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID ||
-                target.getFiducialId() == Constants.FieldConstants.BLUE_RIGHT_HUB_TARGET_ID ||
-                target.getFiducialId() == Constants.FieldConstants.BLUE_OFF_CENTER_HUB_TARGET_ID ||
-                target.getFiducialId() == Constants.FieldConstants.BLUE_LEFT_HUB_TARGET_ID
-            ) {
+                    target.getFiducialId() == Constants.FieldConstants.BLUE_RIGHT_HUB_TARGET_ID ||
+                    target.getFiducialId() == Constants.FieldConstants.BLUE_OFF_CENTER_HUB_TARGET_ID ||
+                    target.getFiducialId() == Constants.FieldConstants.BLUE_LEFT_HUB_TARGET_ID) {
 
                 return calculate(target, robotYaw);
 
@@ -60,10 +59,9 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
 
             if (target.getFiducialId() == Constants.FieldConstants.RED_CENTER_HUB_TARGET_ID ||
-                target.getFiducialId() == Constants.FieldConstants.RED_LEFT_HUB_TARGET_ID ||
-                target.getFiducialId() == Constants.FieldConstants.RED_RIGHT_HUB_TARGET_ID ||
-                target.getFiducialId() == Constants.FieldConstants.RED_OFF_CENTER_HUB_TARGET_ID
-            ) {
+                    target.getFiducialId() == Constants.FieldConstants.RED_LEFT_HUB_TARGET_ID ||
+                    target.getFiducialId() == Constants.FieldConstants.RED_RIGHT_HUB_TARGET_ID ||
+                    target.getFiducialId() == Constants.FieldConstants.RED_OFF_CENTER_HUB_TARGET_ID) {
 
                 return calculate(target, robotYaw);
 
@@ -138,14 +136,22 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
             return 0;
         }
 
-        for (PhotonTrackedTarget target : result.getTargets()) {
-            if (target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID) {
-                return PhotonUtils.calculateDistanceToTargetMeters(
-                        Constants.Vision.CAMERA_HEIGHT_METERS, // camera height
-                        Constants.FieldConstants.APRILTAG_HUB_HEIGHTS, // target height
-                        Constants.Vision.CAMERA_PITCH_RADIANS,
-                        Units.degreesToRadians(target.getPitch()));
-            }
+        final PhotonTrackedTarget target = result.getBestTarget();
+
+        if (target.getFiducialId() == Constants.FieldConstants.RED_CENTER_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.RED_LEFT_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.RED_RIGHT_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.RED_OFF_CENTER_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.BLUE_RIGHT_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.BLUE_OFF_CENTER_HUB_TARGET_ID ||
+                target.getFiducialId() == Constants.FieldConstants.BLUE_LEFT_HUB_TARGET_ID) {
+
+            return PhotonUtils.calculateDistanceToTargetMeters(
+                    Constants.Vision.CAMERA_HEIGHT_METERS, // camera height
+                    Constants.FieldConstants.APRILTAG_HUB_HEIGHTS_METERS, // target height
+                    Constants.Vision.CAMERA_PITCH_RADIANS,
+                    Units.degreesToRadians(target.getPitch()));
 
         }
 

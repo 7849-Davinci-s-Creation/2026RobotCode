@@ -7,8 +7,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.StateTracker;
@@ -37,16 +35,14 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         final TalonFXConfiguration configs = new TalonFXConfiguration()
                 .withMotorOutput(
                         new MotorOutputConfigs()
-                                .withNeutralMode(NeutralModeValue.Brake)
-                )
+                                .withNeutralMode(NeutralModeValue.Brake))
                 .withSlot0(
                         new Slot0Configs()
                                 .withKP(Constants.Intake.P)
                                 .withKI(Constants.Intake.I)
                                 .withKD(Constants.Intake.D)
                                 .withKS(Constants.Intake.S)
-                                .withKV(Constants.Intake.V)
-                );
+                                .withKV(Constants.Intake.V));
 
         pivotMotor.getConfigurator().apply(configs);
     };
