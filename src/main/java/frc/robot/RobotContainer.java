@@ -29,23 +29,19 @@ import frc.robot.subsystems.*;
 import lib.RobotMethods;
 
 public final class RobotContainer implements RobotMethods {
-        private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-        private final Climber climber = Climber.getInstance();
-        private final Indexer indexer = Indexer.getInstance();
-        private final Intake intake = Intake.getInstance();
-        private final Vision vision = Vision.getInstance();
-        private final Shooter shooter = Shooter.getInstance();
+        private final CommandSwerveDrivetrain drivetrain;
+        private final Climber climber;
+        private final Indexer indexer;
+        private final Intake intake;
+        private final Vision vision;
+        private final Shooter shooter;
 
-        private final CommandXboxController joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
+        private final CommandXboxController joystick;
 
         /* Setting up bindings for necessary control of the swerve drive platform */
-        private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                        .withDeadband(MAX_SPEED * 0.1).withRotationalDeadband(MAX_ANGULAR_RATE * 0.1) // Add a 10%
-                                                                                                      // deadband
-                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive
-                                                                                 // motors
-        private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-        private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+        private final SwerveRequest.FieldCentric drive; // Use open-loop control for drive
+                                                        // motors
+        private final SwerveRequest.PointWheelsAt point;
 
         private final SendableChooser<Command> autoChooser;
 
@@ -54,12 +50,31 @@ public final class RobotContainer implements RobotMethods {
         public RobotContainer() {
                 timer.start();
 
+                drivetrain = TunerConstants.createDrivetrain();
+                climber = Climber.getInstance();
+                indexer = Indexer.getInstance();
+                intake = Intake.getInstance();
+                vision = Vision.getInstance();
+                shooter = Shooter.getInstance();
+
                 drivetrain.initialize();
                 climber.initialize();
                 indexer.initialize();
                 intake.initialize();
                 vision.initialize();
                 shooter.initialize();
+
+                joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
+
+                /* Setting up bindings for necessary control of the swerve drive platform */
+                drive = new SwerveRequest.FieldCentric()
+                                .withDeadband(MAX_SPEED * 0.1).withRotationalDeadband(MAX_ANGULAR_RATE * 0.1) // Add a
+                                                                                                              // 10%
+                                                                                                              // deadband
+                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for
+                                                                                         // drive
+                                                                                         // motors
+                point = new SwerveRequest.PointWheelsAt();
 
                 configureDefault();
                 configureBindings();
@@ -94,7 +109,6 @@ public final class RobotContainer implements RobotMethods {
         }
 
         private void configureBindings() {
-                joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
                 joystick.b().whileTrue(drivetrain.applyRequest(
                                 () -> point.withModuleDirection(
                                                 new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
@@ -151,8 +165,6 @@ public final class RobotContainer implements RobotMethods {
                 // with
                 // negative X (left)
                 );
-
-                joystick.leftTrigger().whileTrue(drivetrain.applyRequest(() -> brake));
         }
 
         public Command getAutonomousCommand() {
