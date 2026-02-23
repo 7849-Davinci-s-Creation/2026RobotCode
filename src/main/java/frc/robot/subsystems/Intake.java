@@ -7,9 +7,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.StateTracker;
 import lib.NiceSubsytem;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -25,12 +25,16 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         return instance;
     }
 
+    public IntakeState currentState;
+
     private final TalonFX pivotMotor;
     private final WPI_VictorSPX intakeMotor;
 
     private Intake() {
         this.pivotMotor = new TalonFX(Constants.Intake.PIVOT_MOTOR_PORT);
         this.intakeMotor = new WPI_VictorSPX(Constants.Intake.INTAKE_MOTOR_PORT);
+
+        this.currentState = IntakeState.IN;
 
         final TalonFXConfiguration configs = new TalonFXConfiguration()
                 .withMotorOutput(
@@ -60,21 +64,21 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     }
 
     public void deploy() {
-        if (StateTracker.currentIntakeState == StateTracker.IntakeState.EXTENDED) {
-            return;
-        }
+        if (currentState == IntakeState.IN) {
+            final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
+            pivotMotor.setControl(voltage);
 
-        final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
-        pivotMotor.setControl(voltage);
+            currentState = IntakeState.OUT;
+        }
     }
 
     public void retract() {
-        if (StateTracker.currentIntakeState == StateTracker.IntakeState.STORED) {
-            return;
-        }
+        if (currentState == IntakeState.OUT) {
+            final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
+            pivotMotor.setControl(voltage);
 
-        final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
-        pivotMotor.setControl(voltage);
+            currentState = IntakeState.IN;
+        }
     }
 
     @Override
@@ -84,6 +88,11 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
 
     @Override
     public void periodic() {
+        SmartDashboard.putString("Intake State", currentState.toString());
+    }
 
+    public enum IntakeState {
+        OUT,
+        IN
     }
 }

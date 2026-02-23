@@ -140,9 +140,5 @@ public final class Telemetry {
                 // moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 *
                 // MaxSpeed));
                 // }
-
-                SmartDashboard.putString("Current Shooter Mode", StateTracker.currentShooterState.toString());
-                SmartDashboard.putString("Current Intake Mode", StateTracker.currentIntakeState.toString());
-                SmartDashboard.putString("Current Indexer Mode", StateTracker.currentIndexerState.toString());
         }
 }
