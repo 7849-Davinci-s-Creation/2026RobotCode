@@ -24,6 +24,7 @@ public final class Constants {
 
     public static final class Operator {
         public static final int DRIVER_CONTROLLER_PORT = 1;
+        public static final int OPERATOR_CONTROLLER_PORT = 2;
 
         public static final double SLIGHT_CREEP_NERF_DRIVE = 1;
         public static final double SLIGHT_CREEP_NERF_ROTATE = 1;
@@ -33,8 +34,8 @@ public final class Constants {
 
     public static final class Shooter {
         // set these
-        public static final int LEFT_KRAKEN_CANID = 0;
-        public static final int RIGHT_KRAKEN_CANID = 0;
+        public static final int LEFT_KRAKEN_CANID = 30;
+        public static final int RIGHT_KRAKEN_CANID = 34;
 
         // find these
         public static final double P = 0;
@@ -50,13 +51,13 @@ public final class Constants {
     }
 
     public static final class Indexer {
-        public static final int STAGE1_MOTOR_PORT = 0;
-        public static final int STAGE2_MOTOR_PORT = 0;
+        public static final int STAGE1_MOTOR_PORT = 50;
+        public static final int STAGE2_MOTOR_PORT = 51;
     }
 
     public static final class Intake {
-        public static final int INTAKE_MOTOR_PORT = 0;
-        public static final int PIVOT_MOTOR_PORT = 0;
+        public static final int INTAKE_MOTOR_PORT = 53;
+        public static final int PIVOT_MOTOR_PORT = 33;
 
         public static final double P = 0;
         public static final double I = 0;

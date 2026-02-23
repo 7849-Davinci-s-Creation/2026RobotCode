@@ -5,7 +5,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,7 +46,10 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         right.clearStickyFaults();
 
         left.getConfigurator().apply(config);
-        right.getConfigurator().apply(config);
+        right.getConfigurator().apply(config.withMotorOutput(
+            new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Coast)
+        ));
 
         left.getConfigurator().apply(shooterConfigs);
         right.getConfigurator().apply(shooterConfigs);
@@ -60,9 +63,11 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         right.setControl(request);
     }
 
-    public void stop() {
-        left.stopMotor();
-        right.stopMotor();
+    public Runnable stop() {
+        return () -> {
+            left.stopMotor();
+            right.stopMotor();
+        };
     }
 
     @Override

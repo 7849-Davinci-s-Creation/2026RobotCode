@@ -342,7 +342,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void initialize() {
-        // Configure AutoBuilder last
         try {
             AutoBuilder.configure(
                     this::getPose, // Robot pose supplier
@@ -366,13 +365,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         return false;
                     },
 
-                    this // Reference to this subsystem to set requirements
-            );
-
+                    this);
         } catch (IOException | ParseException e) {
-            DriverStation.reportError(e.getMessage(), e.getStackTrace());
+            e.printStackTrace();
         }
-
+        
         final Telemetry logger = new Telemetry(MAX_SPEED);
         this.registerTelemetry(logger::telemeterize);
     }

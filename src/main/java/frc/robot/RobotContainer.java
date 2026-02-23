@@ -9,6 +9,7 @@ import static frc.robot.Constants.DriveTrain.MAX_SPEED;
 import static frc.robot.Constants.Operator.DRIVER_CONTROLLER_PORT;
 import static frc.robot.Constants.Operator.MAJOR_CREEP_NERF_DRIVE;
 import static frc.robot.Constants.Operator.MAJOR_CREEP_NERF_ROTATE;
+import static frc.robot.Constants.Operator.OPERATOR_CONTROLLER_PORT;
 import static frc.robot.Constants.Operator.SLIGHT_CREEP_NERF_DRIVE;
 import static frc.robot.Constants.Operator.SLIGHT_CREEP_NERF_ROTATE;
 
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
@@ -37,6 +39,7 @@ public final class RobotContainer implements RobotMethods {
         private final Shooter shooter;
 
         private final CommandXboxController joystick;
+        private final CommandXboxController operator;
 
         /* Setting up bindings for necessary control of the swerve drive platform */
         private final SwerveRequest.FieldCentric drive; // Use open-loop control for drive
@@ -48,8 +51,6 @@ public final class RobotContainer implements RobotMethods {
         private final Timer timer = new Timer();
 
         public RobotContainer() {
-                timer.start();
-
                 drivetrain = TunerConstants.createDrivetrain();
                 climber = Climber.getInstance();
                 indexer = Indexer.getInstance();
@@ -65,6 +66,7 @@ public final class RobotContainer implements RobotMethods {
                 shooter.initialize();
 
                 joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
+                operator = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
 
                 /* Setting up bindings for necessary control of the swerve drive platform */
                 drive = new SwerveRequest.FieldCentric()
@@ -81,6 +83,9 @@ public final class RobotContainer implements RobotMethods {
                 registerNamedCommands();
 
                 autoChooser = AutoBuilder.buildAutoChooser();
+                SmartDashboard.putData("Auto", autoChooser);
+
+                timer.start();
         }
 
         private void configureDefault() {
@@ -165,6 +170,7 @@ public final class RobotContainer implements RobotMethods {
                 // with
                 // negative X (left)
                 );
+
         }
 
         public Command getAutonomousCommand() {
@@ -177,8 +183,6 @@ public final class RobotContainer implements RobotMethods {
 
         @Override
         public void robotPeriodic() {
-                SmartDashboard.putData("Auto", autoChooser);
-
                 // periodically call garbage collector
                 if (timer.advanceIfElapsed(5)) {
                         System.gc();
