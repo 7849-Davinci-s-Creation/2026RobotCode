@@ -55,12 +55,14 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         right.getConfigurator().apply(shooterConfigs);
     }
 
-    public void setVelocity(double rpm) {
-        final VelocityVoltage request = new VelocityVoltage(rpm)
-                .withSlot(0);
+    public Runnable setVelocity(double rpm) {
+        return () -> {
+            final VelocityVoltage request = new VelocityVoltage(rpm)
+                    .withSlot(0);
 
-        left.setControl(request);
-        right.setControl(request);
+            left.setControl(request);
+            right.setControl(request);
+        };
     }
 
     public Runnable stop() {

@@ -24,20 +24,20 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
         stage2 = new WPI_VictorSPX(Constants.Indexer.STAGE2_MOTOR_PORT);
     }
 
-    public void stage1On() {
-        stage1.set(1);
+    public Runnable stage1On() {
+        return () -> stage1.set(1);
     }
 
-    public void stage2On() {
-        stage2.set(1);
+    public Runnable stage2On() {
+        return () -> stage2.set(1);
     }
 
-    public void stage1Off() {
-        stage1.set(0);
+    public Runnable stage1Off() {
+        return () -> stage1.set(0);
     }
 
-    public void stage2Off() {
-        stage2.set(0);
+    public Runnable stage2Off() {
+        return () -> stage2.set(0);
     }
 
     @Override

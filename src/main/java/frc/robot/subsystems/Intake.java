@@ -51,34 +51,38 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         pivotMotor.getConfigurator().apply(configs);
     };
 
-    public void intake() {
-        intakeMotor.set(0.5);
+    public Runnable intake() {
+        return () -> intakeMotor.set(0.5);
     }
 
-    public void outake() {
-        intakeMotor.set(-0.5);
+    public Runnable outake() {
+        return () -> intakeMotor.set(-0.5);
     }
 
-    public void stopIntake() {
-        intakeMotor.set(0);
+    public Runnable stopIntake() {
+        return () -> intakeMotor.set(0);
     }
 
-    public void deploy() {
-        if (currentState == IntakeState.IN) {
-            final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
-            pivotMotor.setControl(voltage);
+    public Runnable deploy() {
+        return () -> {
+            if (currentState == IntakeState.IN) {
+                final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
+                pivotMotor.setControl(voltage);
 
-            currentState = IntakeState.OUT;
-        }
+                currentState = IntakeState.OUT;
+            }
+        };
     }
 
-    public void retract() {
-        if (currentState == IntakeState.OUT) {
-            final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
-            pivotMotor.setControl(voltage);
+    public Runnable retract() {
+        return () -> {
+            if (currentState == IntakeState.OUT) {
+                final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
+                pivotMotor.setControl(voltage);
 
-            currentState = IntakeState.IN;
-        }
+                currentState = IntakeState.IN;
+            }
+        };
     }
 
     @Override
