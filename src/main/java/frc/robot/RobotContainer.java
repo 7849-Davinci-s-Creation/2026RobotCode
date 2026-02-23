@@ -17,7 +17,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,7 +42,6 @@ public final class RobotContainer implements RobotMethods {
         /* Setting up bindings for necessary control of the swerve drive platform */
         private final SwerveRequest.FieldCentric drive; // Use open-loop control for drive
                                                         // motors
-        private final SwerveRequest.PointWheelsAt point;
 
         private final SendableChooser<Command> autoChooser;
 
@@ -75,8 +73,6 @@ public final class RobotContainer implements RobotMethods {
                                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for
                                                                                          // drive
                                                                                          // motors
-                point = new SwerveRequest.PointWheelsAt();
-
                 configureDefault();
                 configureBindings();
                 registerNamedCommands();
