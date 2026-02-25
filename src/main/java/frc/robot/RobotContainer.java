@@ -155,7 +155,8 @@ public final class RobotContainer implements RobotMethods {
                                                 () -> {
                                                         final Rotation2d target = vision
                                                                         .calculateRobotOffsetToTargetCenter(
-                                                                                        drivetrain.getState().Pose.getRotation());
+                                                                                        drivetrain.getState().Pose.getRotation()
+                                                                        );
 
                                                         return aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
                                                                         ? -joystick.getLeftY()* Constants.DriveTrain.MAX_SPEED : 0)
@@ -168,11 +169,12 @@ public final class RobotContainer implements RobotMethods {
                                                                 .withRotationalRate(-joystick.getRightX()
                                                                                 * MAX_ANGULAR_RATE)));
 
-                // aim and shoot at calculated velocity
+                // shoot at calculated velocity
                 operator.a().whileTrue(
-                                Commands.run(shooter.setVelocity(45))).onFalse(
-                                                Commands.run(
-                                                                shooter.stop()));
+                                Commands.run(shooter.setVelocity(45)))
+                        .onFalse(
+                                Commands.run(shooter.stop())
+                );
 
                 // shoot at full speed / full field rpm
                 operator.leftBumper().whileTrue(
