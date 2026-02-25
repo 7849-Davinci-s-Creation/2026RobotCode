@@ -40,6 +40,20 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
         return () -> stage2.set(0);
     }
 
+    public Runnable bothOn() {
+        return () -> {
+            stage1.set(1);
+            stage2.set(1);
+        };
+    }
+
+    public Runnable bothOff() {
+        return () -> {
+            stage1.set(0);
+            stage2.set(0);
+        };
+    }
+
     @Override
     public void initialize() {
 

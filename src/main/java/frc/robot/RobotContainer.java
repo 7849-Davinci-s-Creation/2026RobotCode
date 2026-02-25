@@ -187,6 +187,17 @@ public final class RobotContainer implements RobotMethods {
                 ).onFalse(
                         Commands.run(shooter.stop())
                 );
+
+                // manuel enabling of both indexer stages
+                operator.povLeft().whileTrue(
+                        Commands.run(
+                                indexer.bothOn()
+                        )
+                ).onFalse(
+                        Commands.run(
+                                indexer.bothOff()
+                        )
+                );
         }
 
         public Command getAutonomousCommand() {
