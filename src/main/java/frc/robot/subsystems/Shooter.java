@@ -47,17 +47,18 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
 
         left.getConfigurator().apply(config);
         right.getConfigurator().apply(config.withMotorOutput(
-            new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
+            new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast)
         ));
 
         left.getConfigurator().apply(shooterConfigs);
+
         right.getConfigurator().apply(shooterConfigs);
     }
 
-    public Runnable setVelocity(double rpm) {
+    public Runnable setVelocity(double rps) {
         return () -> {
-            final VelocityVoltage request = new VelocityVoltage(rpm)
+            final VelocityVoltage request = new VelocityVoltage(rps)
                     .withSlot(0);
 
             left.setControl(request);
@@ -69,6 +70,13 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         return () -> {
             left.stopMotor();
             right.stopMotor();
+        };
+    }
+
+    public Runnable runFullSpeedRaw() {
+        return () -> {
+            left.set(1);
+            right.set(1);
         };
     }
 

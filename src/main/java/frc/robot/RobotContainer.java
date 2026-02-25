@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.DriveTrain.AIM_D;
+import static frc.robot.Constants.DriveTrain.AIM_DEADBAND;
+import static frc.robot.Constants.DriveTrain.AIM_I;
+import static frc.robot.Constants.DriveTrain.AIM_P;
 import static frc.robot.Constants.DriveTrain.MAX_ANGULAR_RATE;
 import static frc.robot.Constants.DriveTrain.MAX_SPEED;
 import static frc.robot.Constants.Operator.DRIVER_CONTROLLER_PORT;
@@ -14,13 +18,17 @@ import static frc.robot.Constants.Operator.SLIGHT_CREEP_NERF_DRIVE;
 import static frc.robot.Constants.Operator.SLIGHT_CREEP_NERF_ROTATE;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
@@ -42,6 +50,8 @@ public final class RobotContainer implements RobotMethods {
         /* Setting up bindings for necessary control of the swerve drive platform */
         private final SwerveRequest.FieldCentric drive; // Use open-loop control for drive
                                                         // motors
+
+        private final SwerveRequest.FieldCentricFacingAngle aiming;
 
         private final SendableChooser<Command> autoChooser;
 
@@ -73,6 +83,11 @@ public final class RobotContainer implements RobotMethods {
                                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for
                                                                                          // drive
                                                                                          // motors
+
+                aiming = new FieldCentricFacingAngle()
+                                .withHeadingPID(AIM_P, AIM_I, AIM_D)
+                                .withRotationalDeadband(AIM_DEADBAND);
+
                 configureDefault();
                 configureBindings();
                 registerNamedCommands();
@@ -156,6 +171,56 @@ public final class RobotContainer implements RobotMethods {
                 // with
                 // negative X (left)
                 );
+
+                // FIX THIS UGLINESS
+                joystick.a().whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> {
+                                                        final Rotation2d target = vision
+                                                                        .calculateRobotOffsetToTargetCenter(
+                                                                                        drivetrain.getState().Pose
+                                                                                                        .getRotation());
+
+                                                        return aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
+                                                                        ? -joystick.getLeftY()
+                                                                                        * Constants.DriveTrain.MAX_SPEED
+                                                                        : 0)
+                                                                     .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
+                                                                        ? -joystick.getLeftX()
+                                                                                                                                        * Constants.DriveTrain.MAX_SPEED
+                                                                        : 0)
+                                                                      .withTargetDirection(target);
+                                                }))
+                                .onFalse(
+                                                // Drivetrain will execute this command periodically
+                                                drivetrain.applyRequest(() -> drive
+                                                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED) // Drive
+                                                                                                                 // forward
+                                                                                                                 // with
+                                                                // negative Y
+                                                                // (forward)
+                                                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED) // Drive
+                                                                                                                 // left
+                                                                                                                 // with
+                                                                                                                 // negative
+                                                                                                                 // X
+                                                                                                                 // (left)
+                                                                .withRotationalRate(-joystick.getRightX()
+                                                                                * MAX_ANGULAR_RATE) // Drive
+                                                                                                    // counterclockwise
+                                                                                                    // with
+                                                // negative X (left)
+                                                ));
+
+                operator.a().whileTrue(
+                                Commands.run(shooter.setVelocity(45))).onFalse(
+                                                Commands.run(
+                                                                shooter.stop()));
+
+                operator.b().whileTrue(
+                                Commands.run(shooter.runFullSpeedRaw())).onFalse(
+                                                Commands.run(
+                                                                shooter.stop()));
 
         }
 

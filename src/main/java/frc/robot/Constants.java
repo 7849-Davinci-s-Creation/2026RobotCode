@@ -20,6 +20,12 @@ public final class Constants {
         public static final Rotation2d BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.kZero;
         /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
         public static final Rotation2d RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.k180deg;
+
+        public static final double AIM_P = 10;
+        public static final double AIM_I = 0;
+        public static final double AIM_D = 0;
+
+        public static final double AIM_DEADBAND = 0.5;
     }
 
     public static final class Operator {
@@ -38,12 +44,12 @@ public final class Constants {
         public static final int RIGHT_KRAKEN_CANID = 34;
 
         // find these
-        public static final double P = 0;
+        public static final double P = 0.45;
         public static final double I = 0;
         public static final double D = 0;
-        public static final double S = 0;
-        public static final double V = 0;
-        public static final double A = 0;
+        public static final double S = 0.1;
+        public static final double V = 0.19;
+        public static final double A = 0.43;
     }
 
     public static final class Climber {
@@ -68,7 +74,7 @@ public final class Constants {
 
     public static final class Vision {
         // set and find these
-        public static final String CAMERA_NAME = "CHANGE_ME";
+        public static final String CAMERA_NAME = "camera";
         public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0);
         public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
     }
