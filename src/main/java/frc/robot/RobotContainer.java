@@ -129,99 +129,64 @@ public final class RobotContainer implements RobotMethods {
                 joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
                 joystick.leftTrigger().whileTrue(
-                                // Drivetrain will execute this command periodically
                                 drivetrain.applyRequest(
                                                 () -> drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED
-                                                                * SLIGHT_CREEP_NERF_DRIVE) // Drive
-                                                                                           // forward
-                                                                                           // with
-                                                                // negative Y
-                                                                // (forward)
+                                                                * SLIGHT_CREEP_NERF_DRIVE)
                                                                 .withVelocityY(-joystick.getLeftX() * MAX_SPEED
-                                                                                * SLIGHT_CREEP_NERF_DRIVE) // Drive left
-                                                                                                           // with
-                                                                                                           // negative X
-                                                                                                           // (left)
+                                                                                * SLIGHT_CREEP_NERF_DRIVE)
                                                                 .withRotationalRate(-joystick.getRightX()
                                                                                 * MAX_ANGULAR_RATE
-                                                                                * SLIGHT_CREEP_NERF_ROTATE)) // Drive
-                                                                                                             // counterclockwise
-                                                                                                             // with
-                // negative X (left)
+                                                                                * SLIGHT_CREEP_NERF_ROTATE))
                 );
 
                 joystick.rightTrigger().whileTrue(
-                                // Drivetrain will execute this command periodically
                                 drivetrain.applyRequest(
                                                 () -> drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED
-                                                                * MAJOR_CREEP_NERF_DRIVE) // Drive
-                                                                // forward
-                                                                // with
-                                                                // negative Y
-                                                                // (forward)
+                                                                * MAJOR_CREEP_NERF_DRIVE)
                                                                 .withVelocityY(-joystick.getLeftX() * MAX_SPEED
-                                                                                * MAJOR_CREEP_NERF_DRIVE) // Drive left
-                                                                // with
-                                                                // negative X
-                                                                // (left)
+                                                                                * MAJOR_CREEP_NERF_DRIVE)
                                                                 .withRotationalRate(-joystick.getRightX()
                                                                                 * MAX_ANGULAR_RATE
-                                                                                * MAJOR_CREEP_NERF_ROTATE)) // Drive
-                // counterclockwise
-                // with
-                // negative X (left)
+                                                                                * MAJOR_CREEP_NERF_ROTATE))
                 );
 
-                // FIX THIS UGLINESS
-                joystick.a().whileTrue(
-                                drivetrain.applyRequest(
+                // aim the drivetrain at the hubs
+                joystick.a().whileTrue(drivetrain.applyRequest(
                                                 () -> {
                                                         final Rotation2d target = vision
                                                                         .calculateRobotOffsetToTargetCenter(
-                                                                                        drivetrain.getState().Pose
-                                                                                                        .getRotation());
+                                                                                        drivetrain.getState().Pose.getRotation());
 
                                                         return aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
-                                                                        ? -joystick.getLeftY()
-                                                                                        * Constants.DriveTrain.MAX_SPEED
-                                                                        : 0)
+                                                                        ? -joystick.getLeftY()* Constants.DriveTrain.MAX_SPEED : 0)
                                                                      .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
-                                                                        ? -joystick.getLeftX()
-                                                                                                                                        * Constants.DriveTrain.MAX_SPEED
-                                                                        : 0)
-                                                                      .withTargetDirection(target);
-                                                }))
-                                .onFalse(
-                                                // Drivetrain will execute this command periodically
-                                                drivetrain.applyRequest(() -> drive
-                                                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED) // Drive
-                                                                                                                 // forward
-                                                                                                                 // with
-                                                                // negative Y
-                                                                // (forward)
-                                                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED) // Drive
-                                                                                                                 // left
-                                                                                                                 // with
-                                                                                                                 // negative
-                                                                                                                 // X
-                                                                                                                 // (left)
+                                                                        ? -joystick.getLeftX()* Constants.DriveTrain.MAX_SPEED : 0)
+                                                                      .withTargetDirection(target); }))
+                                .onFalse(drivetrain.applyRequest(() -> drive
+                                                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED)
+                                                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
                                                                 .withRotationalRate(-joystick.getRightX()
-                                                                                * MAX_ANGULAR_RATE) // Drive
-                                                                                                    // counterclockwise
-                                                                                                    // with
-                                                // negative X (left)
-                                                ));
+                                                                                * MAX_ANGULAR_RATE)));
 
+                // aim and shoot at calculated velocity
                 operator.a().whileTrue(
                                 Commands.run(shooter.setVelocity(45))).onFalse(
                                                 Commands.run(
                                                                 shooter.stop()));
 
-                operator.b().whileTrue(
-                                Commands.run(shooter.runFullSpeedRaw())).onFalse(
-                                                Commands.run(
-                                                                shooter.stop()));
+                // shoot at full speed / full field rpm
+                operator.leftBumper().whileTrue(
+                        Commands.run(shooter.setVelocity(Constants.Shooter.SHOOTER_MAX_RPS))
+                ).onFalse(
+                        Commands.run(shooter.stop())
+                );
 
+                // shoot at half field rpm
+                operator.rightBumper().whileTrue(
+                        Commands.run(shooter.setVelocity(Constants.Shooter.HALF_FIELD_RPS))
+                ).onFalse(
+                        Commands.run(shooter.stop())
+                );
         }
 
         public Command getAutonomousCommand() {
