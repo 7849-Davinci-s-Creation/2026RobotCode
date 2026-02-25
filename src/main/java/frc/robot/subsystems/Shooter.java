@@ -89,5 +89,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
     public void periodic() {
         SmartDashboard.putNumber("Left Velocity: ", left.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Right Velocity: ", right.getVelocity().getValueAsDouble());
+
+        SmartDashboard.putNumber("Shooter Power: ", (left.getVelocity().getValueAsDouble() / Constants.Shooter.SHOOTER_MAX_RPS) * 100);
     }
 }
