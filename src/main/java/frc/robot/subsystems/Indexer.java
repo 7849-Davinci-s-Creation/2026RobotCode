@@ -22,6 +22,9 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
     private Indexer() {
         stage1 = new WPI_VictorSPX(Constants.Indexer.STAGE1_MOTOR_PORT);
         stage2 = new WPI_VictorSPX(Constants.Indexer.STAGE2_MOTOR_PORT);
+
+        stage1.setInverted(true);
+        stage2.setInverted(false);
     }
 
     public Runnable stage1On() {

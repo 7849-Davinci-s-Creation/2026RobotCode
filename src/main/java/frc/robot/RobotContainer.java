@@ -200,6 +200,16 @@ public final class RobotContainer implements RobotMethods {
                                 indexer.bothOff()
                         )
                 );
+
+                operator.povRight().whileTrue(
+                        Commands.run(
+                                intake.intake()
+                        )
+                ).onFalse(
+                        Commands.run(
+                                intake.stopIntake()
+                        )
+                );
         }
 
         public Command getAutonomousCommand() {

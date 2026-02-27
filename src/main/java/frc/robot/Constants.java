@@ -47,9 +47,9 @@ public final class Constants {
         public static final double P = 0.45;
         public static final double I = 0;
         public static final double D = 0;
-        public static final double S = 0.1;
+        public static final double S = 0;
         public static final double V = 0.19;
-        public static final double A = 0.43;
+        public static final double A = 0.20;
 
         public static final double SHOOTER_MAX_RPS = 90;
         public static final double HALF_FIELD_RPS = 45;
@@ -78,8 +78,8 @@ public final class Constants {
     public static final class Vision {
         // set and find these
         public static final String CAMERA_NAME = "camera";
-        public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0);
-        public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+        public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(27);
+        public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(60);
     }
 
     public static final class FieldConstants {
