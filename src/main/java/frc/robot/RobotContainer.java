@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
@@ -45,7 +47,8 @@ public final class RobotContainer implements RobotMethods {
         private final Shooter shooter;
 
         private final CommandXboxController joystick;
-        private final CommandXboxController operator;
+        // private final CommandXboxController operator;
+        private final CommandPS4Controller operator;
 
         /* Setting up bindings for necessary control of the swerve drive platform */
         private final SwerveRequest.FieldCentric drive; // Use open-loop control for drive
@@ -73,7 +76,7 @@ public final class RobotContainer implements RobotMethods {
                 shooter.initialize();
 
                 joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
-                operator = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
+                operator = new CommandPS4Controller(OPERATOR_CONTROLLER_PORT);
 
                 /* Setting up bindings for necessary control of the swerve drive platform */
                 drive = new SwerveRequest.FieldCentric()
@@ -136,8 +139,7 @@ public final class RobotContainer implements RobotMethods {
                                                                                 * SLIGHT_CREEP_NERF_DRIVE)
                                                                 .withRotationalRate(-joystick.getRightX()
                                                                                 * MAX_ANGULAR_RATE
-                                                                                * SLIGHT_CREEP_NERF_ROTATE))
-                );
+                                                                                * SLIGHT_CREEP_NERF_ROTATE)));
 
                 joystick.rightTrigger().whileTrue(
                                 drivetrain.applyRequest(
@@ -147,67 +149,109 @@ public final class RobotContainer implements RobotMethods {
                                                                                 * MAJOR_CREEP_NERF_DRIVE)
                                                                 .withRotationalRate(-joystick.getRightX()
                                                                                 * MAX_ANGULAR_RATE
-                                                                                * MAJOR_CREEP_NERF_ROTATE))
-                );
+                                                                                * MAJOR_CREEP_NERF_ROTATE)));
 
                 // aim the drivetrain at the hubs
                 joystick.a().whileTrue(drivetrain.applyRequest(
-                                                () -> {
-                                                        final Rotation2d target = vision
-                                                                        .calculateRobotOffsetToTargetCenter(
-                                                                                        drivetrain.getState().Pose.getRotation()
-                                                                        );
+                                () -> {
+                                        final Rotation2d target = vision
+                                                        .calculateRobotOffsetToTargetCenter(
+                                                                        drivetrain.getState().Pose.getRotation());
 
-                                                        return aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
-                                                                        ? -joystick.getLeftY()* Constants.DriveTrain.MAX_SPEED : 0)
-                                                                     .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
-                                                                        ? -joystick.getLeftX()* Constants.DriveTrain.MAX_SPEED : 0)
-                                                                      .withTargetDirection(target); }))
+                                        return aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
+                                                        ? -joystick.getLeftY() * Constants.DriveTrain.MAX_SPEED
+                                                        : 0)
+                                                        .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
+                                                                        ? -joystick.getLeftX()
+                                                                                        * Constants.DriveTrain.MAX_SPEED
+                                                                        : 0)
+                                                        .withTargetDirection(target);
+                                }))
                                 .onFalse(drivetrain.applyRequest(() -> drive
-                                                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED)
-                                                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
-                                                                .withRotationalRate(-joystick.getRightX()
-                                                                                * MAX_ANGULAR_RATE)));
+                                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED)
+                                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
+                                                .withRotationalRate(-joystick.getRightX()
+                                                                * MAX_ANGULAR_RATE)));
 
                 // shoot at calculated velocity
-                operator.a().whileTrue(
+                operator.cross().whileTrue(
                                 Commands.run(shooter.setVelocity(45)))
-                        .onFalse(
-                                Commands.run(shooter.stop())
-                );
+                                .onFalse(
+                                                Commands.run(shooter.stop()));
+
+                operator.options().whileTrue(
+                                Commands.run(shooter.setVelocity(-10)))
+                                .onFalse(
+                                                Commands.run(shooter.stop()));
 
                 // shoot at full speed / full field rpm
-                operator.leftBumper().whileTrue(
-                        Commands.run(shooter.setVelocity(Constants.Shooter.SHOOTER_MAX_RPS))
-                ).onFalse(
-                        Commands.run(shooter.stop())
-                );
+                operator.L1().whileTrue(
+                                Commands.run(shooter.setVelocity(Constants.Shooter.SHOOTER_MAX_RPS))).onFalse(
+                                                Commands.run(shooter.stop()));
 
                 // shoot at half field rpm
-                operator.rightBumper().whileTrue(
-                        Commands.run(shooter.setVelocity(Constants.Shooter.HALF_FIELD_RPS))
-                ).onFalse(
-                        Commands.run(shooter.stop())
-                );
+                operator.R1().whileTrue(
+                                Commands.run(shooter.setVelocity(Constants.Shooter.HALF_FIELD_RPS))).onFalse(
+                                                Commands.run(shooter.stop()));
 
                 // manuel enabling of both indexer stages
                 operator.povLeft().whileTrue(
-                        Commands.run(
-                                indexer.bothOn()
+                                Commands.run(
+                                                indexer.bothOn()))
+                                .onFalse(
+                                                Commands.run(
+                                                                indexer.bothOff()));
+
+                operator.povUp().whileTrue(
+                                Commands.run(
+                                                indexer.bothReverse()))
+                                .onFalse(
+                                                Commands.run(
+                                                                indexer.bothOff()));
+
+                operator.povRight().whileTrue(
+                                Commands.run(
+                                                intake.intake()))
+                                .onFalse(
+                                                Commands.run(
+                                                                intake.stopIntake()));
+
+                operator.povDown().whileTrue(
+                                Commands.run(
+                                                intake.outake()))
+                                .onFalse(
+                                                Commands.run(
+                                                                intake.stopIntake()));
+
+                operator.circle().whileTrue(
+                        new ParallelCommandGroup(
+                                Commands.run(intake.intake()),
+                                Commands.run(indexer.stage1On())
                         )
                 ).onFalse(
-                        Commands.run(
-                                indexer.bothOff()
+                        new ParallelCommandGroup(
+                                Commands.run(intake.stopIntake()),
+                                Commands.run(indexer.stage1Off())
                         )
                 );
 
-                operator.povRight().whileTrue(
+                operator.PS().whileTrue(
                         Commands.run(
-                                intake.intake()
+                                intake.runPivotRawIn()
                         )
                 ).onFalse(
                         Commands.run(
-                                intake.stopIntake()
+                                intake.stopPivot()
+                        )
+                );
+
+                operator.share().whileTrue(
+                        Commands.run(
+                                intake.runPivotRawOut()
+                        )
+                ).onFalse(
+                        Commands.run(
+                                intake.stopPivot()
                         )
                 );
         }

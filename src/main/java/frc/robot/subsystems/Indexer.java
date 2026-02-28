@@ -23,7 +23,7 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
         stage1 = new WPI_VictorSPX(Constants.Indexer.STAGE1_MOTOR_PORT);
         stage2 = new WPI_VictorSPX(Constants.Indexer.STAGE2_MOTOR_PORT);
 
-        stage1.setInverted(true);
+        stage1.setInverted(false);
         stage2.setInverted(false);
     }
 
@@ -47,6 +47,13 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
         return () -> {
             stage1.set(1);
             stage2.set(1);
+        };
+    }
+
+        public Runnable bothReverse() {
+        return () -> {
+            stage1.set(-1);
+            stage2.set(-1);
         };
     }
 

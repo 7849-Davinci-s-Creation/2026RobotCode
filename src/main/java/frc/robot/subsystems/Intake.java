@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,7 +40,9 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         final TalonFXConfiguration configs = new TalonFXConfiguration()
                 .withMotorOutput(
                         new MotorOutputConfigs()
-                                .withNeutralMode(NeutralModeValue.Brake))
+                                .withNeutralMode(NeutralModeValue.Brake)
+                                .withInverted(InvertedValue.Clockwise_Positive)
+                                )
                 .withSlot0(
                         new Slot0Configs()
                                 .withKP(Constants.Intake.P)
@@ -52,11 +55,11 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     };
 
     public Runnable intake() {
-        return () -> intakeMotor.set(0.5);
+        return () -> intakeMotor.set(1);
     }
 
     public Runnable outake() {
-        return () -> intakeMotor.set(-0.5);
+        return () -> intakeMotor.set(-1);
     }
 
     public Runnable stopIntake() {
@@ -83,6 +86,23 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
                 currentState = IntakeState.IN;
             }
         };
+    }
+
+    public Runnable runPivotRawOut() {
+        return () -> {
+            pivotMotor.set(-0.09);
+        };
+    }
+
+    
+    public Runnable runPivotRawIn() {
+        return () -> {
+            pivotMotor.set(0.09);
+        };
+    }
+
+    public Runnable stopPivot() {
+        return () -> pivotMotor.stopMotor();
     }
 
     @Override
