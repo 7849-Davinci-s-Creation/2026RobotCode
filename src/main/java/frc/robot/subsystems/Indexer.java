@@ -38,11 +38,19 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
     }
 
     public Runnable stage1Off() {
-        return () -> stage1.set(0);
+        return () -> {
+            oscillateTimer.stop();
+            oscillateTimer.reset();
+            stage1.set(0);
+        };
     }
 
     public Runnable stage2Off() {
-        return () -> stage2.set(0);
+        return () -> {
+            oscillateTimer.stop();
+            oscillateTimer.reset();
+            stage2.set(0);
+        };
     }
 
     public Runnable bothOn() {
@@ -68,6 +76,30 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
             // Oscillates between 0.5 and 1.0 speed, tune these values
             double speed = 0.75 + 0.25 * Math.sin(oscillateTimer.get() * Math.PI * 4);
             stage1.set(speed);
+            stage2.set(speed);
+        };
+    }
+
+    public Runnable oscillateStage1() {
+        return () -> {
+            if (!oscillateTimer.isRunning()) {
+                oscillateTimer.start();
+            }
+
+            // Oscillates between 0.5 and 1.0 speed, tune these values
+            double speed = 0.75 + 0.25 * Math.sin(oscillateTimer.get() * Math.PI * 4);
+            stage1.set(speed);
+        };
+    }
+
+    public Runnable oscillateStage2() {
+        return () -> {
+            if (!oscillateTimer.isRunning()) {
+                oscillateTimer.start();
+            }
+
+            // Oscillates between 0.5 and 1.0 speed, tune these values
+            double speed = 0.75 + 0.25 * Math.sin(oscillateTimer.get() * Math.PI * 4);
             stage2.set(speed);
         };
     }
