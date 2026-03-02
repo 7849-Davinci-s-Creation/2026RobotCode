@@ -200,7 +200,7 @@ public final class RobotContainer implements RobotMethods {
                 // manuel enabling of both indexer stages
                 operator.povLeft().whileTrue(
                                 Commands.run(
-                                                indexer.bothOn()))
+                                                indexer.bothOscillate()))
                                 .onFalse(
                                                 Commands.run(
                                                                 indexer.bothOff()));
