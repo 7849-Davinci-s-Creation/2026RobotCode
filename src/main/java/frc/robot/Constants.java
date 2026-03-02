@@ -90,12 +90,10 @@ public final class Constants {
         // BLUE HUB APRIL TAGS
         public static final int BLUE_RIGHT_HUB_TARGET_ID = 27;
         public static final int BLUE_CENTER_HUB_TARGET_ID = 26;
-        public static final int BLUE_OFF_CENTER_HUB_TARGET_ID = 25;
         public static final int BLUE_LEFT_HUB_TARGET_ID = 24;
 
         // RED HUB APRIL TAGS
         public static final int RED_LEFT_HUB_TARGET_ID = 8;
-        public static final int RED_OFF_CENTER_HUB_TARGET_ID = 9;
         public static final int RED_CENTER_HUB_TARGET_ID = 10;
         public static final int RED_RIGHT_HUB_TARGET_ID = 11;
 
