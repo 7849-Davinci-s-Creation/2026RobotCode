@@ -229,7 +229,7 @@ public final class RobotContainer implements RobotMethods {
                 operator.b().whileTrue(
                                 new ParallelCommandGroup(
                                                 Commands.run(intake.intake()),
-                                                Commands.run(indexer.stage1On())))
+                                                Commands.run(indexer.oscillateStage1())))
                                 .onFalse(
                                                 new ParallelCommandGroup(
                                                                 Commands.run(intake.stopIntake()),
