@@ -80,6 +80,10 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         };
     }
 
+    public double getRPS() {
+        return left.getVelocity().getValueAsDouble();
+    }
+
     @Override
     public void initialize() {
 

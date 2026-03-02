@@ -30,10 +30,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-
+import frc.robot.cmds.InlineCommands;
+import frc.robot.cmds.ShootAtCalculatedVelocity;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import lib.RobotMethods;
@@ -47,8 +47,7 @@ public final class RobotContainer implements RobotMethods {
         private final Shooter shooter;
 
         private final CommandXboxController joystick;
-        // private final CommandXboxController operator;
-        private final CommandPS4Controller operator;
+        private final CommandXboxController operator;
 
         /* Setting up bindings for necessary control of the swerve drive platform */
         private final SwerveRequest.FieldCentric drive; // Use open-loop control for drive
@@ -76,7 +75,7 @@ public final class RobotContainer implements RobotMethods {
                 shooter.initialize();
 
                 joystick = new CommandXboxController(DRIVER_CONTROLLER_PORT);
-                operator = new CommandPS4Controller(OPERATOR_CONTROLLER_PORT);
+                operator = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
 
                 /* Setting up bindings for necessary control of the swerve drive platform */
                 drive = new SwerveRequest.FieldCentric()
@@ -159,38 +158,42 @@ public final class RobotContainer implements RobotMethods {
                                                                         drivetrain.getState().Pose.getRotation());
 
                                         return aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
-                                                        ? -joystick.getLeftY() * Constants.DriveTrain.MAX_SPEED
+                                                        ? -joystick.getLeftY() * Constants.DriveTrain.AIM_MOVEMENT_NERF
                                                         : 0)
                                                         .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
                                                                         ? -joystick.getLeftX()
-                                                                                        * Constants.DriveTrain.MAX_SPEED
+                                                                                        * Constants.DriveTrain.AIM_MOVEMENT_NERF
                                                                         : 0)
                                                         .withTargetDirection(target);
                                 }))
                                 .onFalse(drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED)
-                                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
+                                                .withVelocityX(-joystick.getLeftY()
+                                                                * MAX_SPEED)
+                                                .withVelocityY(-joystick.getLeftX()
+                                                                * MAX_SPEED)
                                                 .withRotationalRate(-joystick.getRightX()
                                                                 * MAX_ANGULAR_RATE)));
 
                 // shoot at calculated velocity
-                operator.cross().whileTrue(
-                                Commands.run(shooter.setVelocity(45)))
+                operator.a().whileTrue(
+                                new ShootAtCalculatedVelocity(shooter, indexer, vision))
                                 .onFalse(
-                                                Commands.run(shooter.stop()));
+                                                new ParallelCommandGroup(
+                                                                Commands.runOnce(shooter.stop()),
+                                                                Commands.runOnce(indexer.bothOff())));
 
-                operator.options().whileTrue(
+                operator.leftStick().whileTrue(
                                 Commands.run(shooter.setVelocity(-10)))
                                 .onFalse(
                                                 Commands.run(shooter.stop()));
 
                 // shoot at full speed / full field rpm
-                operator.L1().whileTrue(
+                operator.leftBumper().whileTrue(
                                 Commands.run(shooter.setVelocity(Constants.Shooter.SHOOTER_MAX_RPS))).onFalse(
                                                 Commands.run(shooter.stop()));
 
                 // shoot at half field rpm
-                operator.R1().whileTrue(
+                operator.rightBumper().whileTrue(
                                 Commands.run(shooter.setVelocity(Constants.Shooter.HALF_FIELD_RPS))).onFalse(
                                                 Commands.run(shooter.stop()));
 
@@ -223,37 +226,28 @@ public final class RobotContainer implements RobotMethods {
                                                 Commands.run(
                                                                 intake.stopIntake()));
 
-                operator.circle().whileTrue(
-                        new ParallelCommandGroup(
-                                Commands.run(intake.intake()),
-                                Commands.run(indexer.stage1On())
-                        )
-                ).onFalse(
-                        new ParallelCommandGroup(
-                                Commands.run(intake.stopIntake()),
-                                Commands.run(indexer.stage1Off())
-                        )
-                );
+                operator.b().whileTrue(
+                                new ParallelCommandGroup(
+                                                Commands.run(intake.intake()),
+                                                Commands.run(indexer.stage1On())))
+                                .onFalse(
+                                                new ParallelCommandGroup(
+                                                                Commands.run(intake.stopIntake()),
+                                                                Commands.run(indexer.stage1Off())));
 
-                operator.PS().whileTrue(
-                        Commands.run(
-                                intake.runPivotRawIn()
-                        )
-                ).onFalse(
-                        Commands.run(
-                                intake.stopPivot()
-                        )
-                );
+                operator.back().whileTrue(
+                                Commands.run(
+                                                intake.runPivotRawIn()))
+                                .onFalse(
+                                                Commands.run(
+                                                                intake.stopPivot()));
 
-                operator.share().whileTrue(
-                        Commands.run(
-                                intake.runPivotRawOut()
-                        )
-                ).onFalse(
-                        Commands.run(
-                                intake.stopPivot()
-                        )
-                );
+                operator.rightStick().whileTrue(
+                                Commands.run(
+                                                intake.runPivotRawOut()))
+                                .onFalse(
+                                                Commands.run(
+                                                                intake.stopPivot()));
         }
 
         public Command getAutonomousCommand() {

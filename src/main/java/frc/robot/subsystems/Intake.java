@@ -91,6 +91,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     public Runnable runPivotRawOut() {
         return () -> {
             pivotMotor.set(-0.09);
+            currentState = IntakeState.OUT;
         };
     }
 
@@ -98,6 +99,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     public Runnable runPivotRawIn() {
         return () -> {
             pivotMotor.set(0.09);
+            currentState = IntakeState.IN;
         };
     }
 

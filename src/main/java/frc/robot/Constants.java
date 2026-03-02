@@ -14,6 +14,9 @@ public final class Constants {
         public static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a
                                                                                                         // rotation per
                                                                                                         // second
+
+        public static final double AIM_MOVEMENT_NERF = MetersPerSecond.of(2).in(MetersPerSecond);
+
         // max angular velocity
 
         /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -25,12 +28,12 @@ public final class Constants {
         public static final double AIM_I = 0;
         public static final double AIM_D = 0;
 
-        public static final double AIM_DEADBAND = 0.5;
+        public static final double AIM_DEADBAND = 0.1;
     }
 
     public static final class Operator {
         public static final int DRIVER_CONTROLLER_PORT = 1;
-        public static final int OPERATOR_CONTROLLER_PORT = 0;
+        public static final int OPERATOR_CONTROLLER_PORT = 2;
 
         public static final double SLIGHT_CREEP_NERF_DRIVE = 1;
         public static final double SLIGHT_CREEP_NERF_ROTATE = 1;
@@ -44,7 +47,7 @@ public final class Constants {
         public static final int RIGHT_KRAKEN_CANID = 34;
 
         // find these
-        public static final double P = 0.45;
+        public static final double P = 0.57;
         public static final double I = 0;
         public static final double D = 0;
         public static final double S = 0;
@@ -53,6 +56,7 @@ public final class Constants {
 
         public static final double SHOOTER_MAX_RPS = 90;
         public static final double HALF_FIELD_RPS = 45;
+        public static final double MIN_RPS = 25;
     }
 
     public static final class Climber {
