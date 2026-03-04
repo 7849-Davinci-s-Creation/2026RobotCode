@@ -41,7 +41,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
                 .withMotorOutput(
                         new MotorOutputConfigs()
                                 .withNeutralMode(NeutralModeValue.Brake)
-                                .withInverted(InvertedValue.Clockwise_Positive)
+                                .withInverted(InvertedValue.CounterClockwise_Positive)
                                 )
                 .withSlot0(
                         new Slot0Configs()
@@ -64,6 +64,10 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
 
     public Runnable stopIntake() {
         return () -> intakeMotor.set(0);
+    }
+
+    public Runnable zeroPivot() {
+        return () -> pivotMotor.setPosition(0);
     }
 
     public Runnable deploy() {
@@ -115,6 +119,8 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     @Override
     public void periodic() {
         SmartDashboard.putString("Intake State", currentState.toString());
+
+        SmartDashboard.putNumber("Intake Position", pivotMotor.getPosition().getValueAsDouble());
     }
 
     public enum IntakeState {

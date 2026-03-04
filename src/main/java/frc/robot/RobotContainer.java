@@ -22,6 +22,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -32,8 +33,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.cmds.InlineCommands;
 import frc.robot.cmds.ShootAtCalculatedVelocity;
+import frc.robot.cmds.autos.AimTimed;
+import frc.robot.cmds.autos.IntakeTimed;
+import frc.robot.cmds.autos.ShootAtCalculatedVelocityTimed;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import lib.RobotMethods;
@@ -248,6 +251,8 @@ public final class RobotContainer implements RobotMethods {
                                 .onFalse(
                                                 Commands.run(
                                                                 intake.stopPivot()));
+
+                operator.leftStick().onTrue(Commands.runOnce(intake.zeroPivot()));
         }
 
         public Command getAutonomousCommand() {
@@ -255,7 +260,22 @@ public final class RobotContainer implements RobotMethods {
         }
 
         public void registerNamedCommands() {
+                NamedCommands.registerCommand("shootaim",
+                                new ParallelCommandGroup(
+                                                new ShootAtCalculatedVelocityTimed(shooter, indexer,
+                                                                vision, 10, shooter, indexer, vision),
+                                                drivetrain.applyRequest(() -> {
+                                                        final Rotation2d target = vision
+                                                                        .calculateRobotOffsetToTargetCenter(
+                                                                                        drivetrain.getState().Pose
+                                                                                                        .getRotation());
 
+                                                        return aiming.withTargetDirection(target);
+                                                })));
+
+                NamedCommands.registerCommand("intake", new IntakeTimed(intake, indexer, 4, intake, indexer));
+
+                NamedCommands.registerCommand("aim", new AimTimed(drivetrain, vision, aiming, drive, 1, drivetrain));
         }
 
         @Override
@@ -293,11 +313,16 @@ public final class RobotContainer implements RobotMethods {
 
         @Override
         public void autonomousExit() {
-
+                drivetrain.setControl(drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED)
+                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
+                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE));
         }
 
         @Override
         public void teleopInit() {
+                drivetrain.setControl(drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED)
+                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
+                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE));
 
         }
 
