@@ -56,7 +56,9 @@ public final class Constants {
 
         public static final double SHOOTER_MAX_RPS = 90;
         public static final double HALF_FIELD_RPS = 45;
-        public static final double MIN_RPS = 25;
+
+        // default shooting position rps
+        public static final double DEFAULT_RPS = 25;
     }
 
     public static final class Climber {
@@ -84,6 +86,10 @@ public final class Constants {
         public static final String CAMERA_NAME = "camera";
         public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(27);
         public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(60);
+
+        public static final int CANDLE_ID = 0;
+        public static final int LED_START = 0;
+        public static final int LED_END = 1;
     }
 
     public static final class FieldConstants {

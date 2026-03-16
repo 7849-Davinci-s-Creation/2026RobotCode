@@ -1,5 +1,14 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.configs.CANdleFeaturesConfigs;
+import com.ctre.phoenix6.configs.LEDConfigs;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.RGBWColor;
+import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
+import com.ctre.phoenix6.signals.StripTypeValue;
+import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,23 +33,43 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
     private final PhotonCamera camera;
 
-    private Rotation2d lastCalculatedRotation;
+    private final CANdle statusLED;
+
+    private Rotation2d cachedAngleToHubTargetCenter;
 
     private double cachedDistance = 0;
 
     private Vision() {
         camera = new PhotonCamera(Constants.Vision.CAMERA_NAME);
-        lastCalculatedRotation = Rotation2d.fromDegrees(0);
+
+        statusLED = new CANdle(Constants.Vision.CANDLE_ID);
+
+        final CANdleConfiguration lightcon = new CANdleConfiguration();
+        lightcon.withCANdleFeatures(
+                new CANdleFeaturesConfigs()
+                        .withStatusLedWhenActive(StatusLedWhenActiveValue.Enabled)
+                        .withVBatOutputMode(VBatOutputModeValue.Modulated)
+                )
+                        .withLED(
+                                new LEDConfigs().withBrightnessScalar(
+                                        1
+                                ).withStripType(StripTypeValue.RGB)
+                        );
+
+
+        statusLED.getConfigurator().apply(lightcon);
+
+        cachedAngleToHubTargetCenter = Rotation2d.fromDegrees(0);
     }
 
     public Rotation2d calculateRobotOffsetToTargetCenter(Rotation2d robotYaw) {
         var results = camera.getAllUnreadResults();
         if (results.isEmpty()) {
-            return lastCalculatedRotation;
+            return cachedAngleToHubTargetCenter;
         }
         var result = results.get(results.size() - 1);
         if (!result.hasTargets()) {
-            return lastCalculatedRotation;
+            return cachedAngleToHubTargetCenter;
         }
 
         for (PhotonTrackedTarget target : result.targets) {
@@ -69,7 +98,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
             }
         }
 
-        return lastCalculatedRotation;
+        return cachedAngleToHubTargetCenter;
     }
 
     private Rotation2d calculate(PhotonTrackedTarget target, Rotation2d robotYaw) {
@@ -81,7 +110,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
         SmartDashboard.putString("Aiming to: ", getTargetNameFromID(target.getFiducialId()));
 
-        lastCalculatedRotation = toAimAt;
+        cachedAngleToHubTargetCenter = toAimAt;
 
         return toAimAt;
     }
@@ -153,7 +182,34 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
             return 43;
         }
 
-        return Constants.Shooter.MIN_RPS;
+        return Constants.Shooter.DEFAULT_RPS;
+    }
+
+    private void setLEDToRed() {
+        statusLED.setControl(
+                new SolidColor(Constants.Vision.LED_START, Constants.Vision.LED_END)
+                        .withColor(
+                                new RGBWColor(255, 0, 0)
+                        )
+        );
+    }
+
+    private void setLEDToYellow() {
+        statusLED.setControl(
+                new SolidColor(Constants.Vision.LED_START, Constants.Vision.LED_END)
+                        .withColor(
+                                new RGBWColor(255, 255, 0)
+                        )
+        );
+    }
+
+    private void setLEDToGreen() {
+        statusLED.setControl(
+                new SolidColor(Constants.Vision.LED_START, Constants.Vision.LED_END)
+                        .withColor(
+                                new RGBWColor(0, 255, 0)
+                        )
+        );
     }
 
     @Override
@@ -163,26 +219,62 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
     @Override
     public void periodic() {
+        // if camera is not connect display red
+        if (!camera.isConnected()) {
+            setLEDToRed();
+        }
+
         var results = camera.getAllUnreadResults();
+
+        // if there aren't any results in the camera set to yellow
+        if (results.isEmpty()) {
+            setLEDToYellow();
+        }
+
         if (!results.isEmpty()) {
+
             var result = results.get(results.size() - 1);
+
+            // if there are results but no targets set to yellow
+            if (!result.hasTargets()) {
+                setLEDToYellow();
+            }
+
             if (result.hasTargets()) {
+
                 for (PhotonTrackedTarget target : result.targets) {
+
                     if (target.getFiducialId() == Constants.FieldConstants.RED_CENTER_HUB_TARGET_ID ||
                             target.getFiducialId() == Constants.FieldConstants.RED_LEFT_HUB_TARGET_ID ||
                             target.getFiducialId() == Constants.FieldConstants.RED_RIGHT_HUB_TARGET_ID ||
+
                             target.getFiducialId() == Constants.FieldConstants.BLUE_CENTER_HUB_TARGET_ID ||
                             target.getFiducialId() == Constants.FieldConstants.BLUE_RIGHT_HUB_TARGET_ID ||
                             target.getFiducialId() == Constants.FieldConstants.BLUE_LEFT_HUB_TARGET_ID) {
+
                         cachedDistance = PhotonUtils.calculateDistanceToTargetMeters(
                                 Constants.Vision.CAMERA_HEIGHT_METERS,
                                 Constants.FieldConstants.APRILTAG_HUB_HEIGHTS_METERS,
                                 Constants.Vision.CAMERA_PITCH_RADIANS,
-                                Units.degreesToRadians(target.getPitch()));
-                        return;
+                                Units.degreesToRadians(target.getPitch())
+                        );
+
+                        // we see targets and therefore can work with them
+                        // set LEDs to green
+                        setLEDToGreen();
+
+                        break;
+
+                    } else {
+
+                        // if we see the targets, but they aren't the ones we want set the status to yellow
+                        setLEDToYellow();
                     }
+
                 }
+
             }
+
         }
 
         SmartDashboard.putNumber("Cached Distances: ", cachedDistance);

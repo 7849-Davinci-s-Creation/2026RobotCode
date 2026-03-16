@@ -43,7 +43,6 @@ import lib.RobotMethods;
 
 public final class RobotContainer implements RobotMethods {
         private final CommandSwerveDrivetrain drivetrain;
-        private final Climber climber;
         private final Indexer indexer;
         private final Intake intake;
         private final Vision vision;
@@ -62,16 +61,16 @@ public final class RobotContainer implements RobotMethods {
 
         private final Timer timer = new Timer();
 
+        private Rotation2d latestAngleToHubTargetCenter;
+
         public RobotContainer() {
                 drivetrain = TunerConstants.createDrivetrain();
-                climber = Climber.getInstance();
                 indexer = Indexer.getInstance();
                 intake = Intake.getInstance();
                 vision = Vision.getInstance();
                 shooter = Shooter.getInstance();
 
                 drivetrain.initialize();
-                climber.initialize();
                 indexer.initialize();
                 intake.initialize();
                 vision.initialize();
@@ -102,6 +101,8 @@ public final class RobotContainer implements RobotMethods {
 
                 // clean up garbage after initialization
                 timer.start();
+
+                latestAngleToHubTargetCenter = Rotation2d.fromDegrees(0);
         }
 
         private void configureDefault() {
@@ -155,20 +156,15 @@ public final class RobotContainer implements RobotMethods {
 
                 // aim the drivetrain at the hubs
                 joystick.a().whileTrue(drivetrain.applyRequest(
-                                () -> {
-                                        final Rotation2d target = vision
-                                                        .calculateRobotOffsetToTargetCenter(
-                                                                        drivetrain.getState().Pose.getRotation());
-
-                                        return aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
+                                () -> aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
                                                         ? -joystick.getLeftY() * Constants.DriveTrain.AIM_MOVEMENT_NERF
                                                         : 0)
                                                         .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
                                                                         ? -joystick.getLeftX()
                                                                                         * Constants.DriveTrain.AIM_MOVEMENT_NERF
                                                                         : 0)
-                                                        .withTargetDirection(target);
-                                }))
+                                                        .withTargetDirection(latestAngleToHubTargetCenter)
+                                ))
                                 .onFalse(drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-joystick.getLeftY()
                                                                 * MAX_SPEED)
@@ -183,7 +179,7 @@ public final class RobotContainer implements RobotMethods {
                                 .onFalse(
                                                 new ParallelCommandGroup(
                                                                 Commands.runOnce(shooter.stop()),
-                                                                Commands.runOnce(indexer.bothOff())));
+                                                                Commands.runOnce(indexer.stage1Off())));
 
                 operator.leftStick().whileTrue(
                                 Commands.run(shooter.setVelocity(-10)))
@@ -203,17 +199,17 @@ public final class RobotContainer implements RobotMethods {
                 // manuel enabling of both indexer stages
                 operator.povLeft().whileTrue(
                                 Commands.run(
-                                                indexer.bothOscillate()))
+                                                indexer.oscillateStage1()))
                                 .onFalse(
                                                 Commands.run(
-                                                                indexer.bothOff()));
+                                                                indexer.stage1Off()));
 
                 operator.povUp().whileTrue(
                                 Commands.run(
-                                                indexer.bothReverse()))
+                                                indexer.oscillateStage1()))
                                 .onFalse(
                                                 Commands.run(
-                                                                indexer.bothOff()));
+                                                                indexer.stage1Off()));
 
                 operator.povRight().whileTrue(
                                 Commands.run(
@@ -284,6 +280,9 @@ public final class RobotContainer implements RobotMethods {
                 if (timer.advanceIfElapsed(5)) {
                         System.gc();
                 }
+
+                // always be tracking the latest angle we need to aim the robot at
+                latestAngleToHubTargetCenter = vision.calculateRobotOffsetToTargetCenter(drivetrain.getPose().getRotation());
         }
 
         @Override

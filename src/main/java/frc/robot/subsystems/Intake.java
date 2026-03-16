@@ -108,7 +108,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     }
 
     public Runnable stopPivot() {
-        return () -> pivotMotor.stopMotor();
+        return pivotMotor::stopMotor;
     }
 
     @Override
