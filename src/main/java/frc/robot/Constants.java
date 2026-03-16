@@ -61,13 +61,8 @@ public final class Constants {
         public static final double DEFAULT_RPS = 25;
     }
 
-    public static final class Climber {
-
-    }
-
     public static final class Indexer {
         public static final int STAGE1_MOTOR_PORT = 50;
-        public static final int STAGE2_MOTOR_PORT = 51;
     }
 
     public static final class Intake {
