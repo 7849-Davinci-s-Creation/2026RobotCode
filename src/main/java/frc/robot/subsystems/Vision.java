@@ -259,7 +259,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
                                 Units.degreesToRadians(target.getPitch())
                         );
 
-                        // we see targets and therefore can work with them
+                        // we see wanted targets and therefore can work with them
                         // set LEDs to green
                         setLEDToGreen();
 
