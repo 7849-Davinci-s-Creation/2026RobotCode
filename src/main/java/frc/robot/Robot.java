@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.HootAutoReplay;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -17,18 +15,12 @@ public final class Robot extends TimedRobot {
 
     private final RobotContainer robotContainer;
 
-    /* log and replay timestamp and joystick data */
-    // private final HootAutoReplay timeAndJoystickReplay = new HootAutoReplay()
-    // .withTimestampReplay()
-    // .withJoystickReplay();
-
     public Robot() {
         robotContainer = new RobotContainer();
     }
 
     @Override
     public void robotPeriodic() {
-        // timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
 
         robotContainer.robotPeriodic();
@@ -36,9 +28,10 @@ public final class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        robotContainer.disabledInit();
-
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().clearComposedCommands();
+
+        robotContainer.disabledInit();
     }
 
     @Override
@@ -48,12 +41,16 @@ public final class Robot extends TimedRobot {
 
     @Override
     public void disabledExit() {
+        CommandScheduler.getInstance().clearComposedCommands();
+        CommandScheduler.getInstance().cancelAll();
+
         robotContainer.disabledExit();
     }
 
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().clearComposedCommands();
 
         autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -71,6 +68,9 @@ public final class Robot extends TimedRobot {
 
     @Override
     public void autonomousExit() {
+        CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().clearComposedCommands();
+
         robotContainer.autonomousExit();
 
         if (autonomousCommand != null) {
@@ -81,6 +81,7 @@ public final class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().clearComposedCommands();
 
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(autonomousCommand);
@@ -96,17 +97,19 @@ public final class Robot extends TimedRobot {
 
     @Override
     public void teleopExit() {
-        robotContainer.teleopExit();
-
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().clearComposedCommands();
+
+        robotContainer.teleopExit();
     }
 
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().clearComposedCommands();
+
         robotContainer.testInit();
 
-        CommandScheduler.getInstance().cancelAll();
     }
 
     @Override
@@ -116,9 +119,10 @@ public final class Robot extends TimedRobot {
 
     @Override
     public void testExit() {
-        robotContainer.testExit();
-
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().clearComposedCommands();
+
+        robotContainer.testExit();
     }
 
     @Override
