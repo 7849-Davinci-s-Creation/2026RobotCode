@@ -45,13 +45,16 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         statusLED = new CANdle(Constants.Vision.CANDLE_ID);
 
         final CANdleConfiguration lightcon = new CANdleConfiguration();
+
         lightcon.withCANdleFeatures(
-                new CANdleFeaturesConfigs()
-                        .withStatusLedWhenActive(StatusLedWhenActiveValue.Enabled)
-                        .withVBatOutputMode(VBatOutputModeValue.Modulated))
+                        new CANdleFeaturesConfigs()
+                                .withStatusLedWhenActive(StatusLedWhenActiveValue.Enabled)
+                                .withVBatOutputMode(VBatOutputModeValue.Modulated))
                 .withLED(
-                        new LEDConfigs().withBrightnessScalar(
-                                1).withStripType(StripTypeValue.RGB));
+                        new LEDConfigs()
+                                .withBrightnessScalar(1)
+                                .withStripType(StripTypeValue.RGB)
+                );
 
         statusLED.getConfigurator().apply(lightcon);
 
@@ -216,11 +219,6 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
         var results = camera.getAllUnreadResults();
 
-        // if there aren't any results in the camera set to yellow
-        if (results.isEmpty()) {
-            setLEDToYellow();
-        }
-
         if (!results.isEmpty()) {
 
             var result = results.get(results.size() - 1);
@@ -265,6 +263,8 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
             }
 
+        } else {
+            setLEDToYellow();
         }
 
         SmartDashboard.putNumber("Cached Distances: ", cachedDistance);
