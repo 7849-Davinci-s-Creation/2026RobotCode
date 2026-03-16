@@ -34,9 +34,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.cmds.ShootAtCalculatedVelocity;
-import frc.robot.cmds.autos.AimTimed;
-import frc.robot.cmds.autos.IntakeTimed;
-import frc.robot.cmds.autos.ShootAtCalculatedVelocityTimed;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import lib.RobotMethods;
@@ -157,14 +154,13 @@ public final class RobotContainer implements RobotMethods {
                 // aim the drivetrain at the hubs
                 joystick.a().whileTrue(drivetrain.applyRequest(
                                 () -> aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
-                                                        ? -joystick.getLeftY() * Constants.DriveTrain.AIM_MOVEMENT_NERF
-                                                        : 0)
-                                                        .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
-                                                                        ? -joystick.getLeftX()
-                                                                                        * Constants.DriveTrain.AIM_MOVEMENT_NERF
-                                                                        : 0)
-                                                        .withTargetDirection(latestAngleToHubTargetCenter)
-                                ))
+                                                ? -joystick.getLeftY() * Constants.DriveTrain.AIM_MOVEMENT_NERF
+                                                : 0)
+                                                .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
+                                                                ? -joystick.getLeftX()
+                                                                                * Constants.DriveTrain.AIM_MOVEMENT_NERF
+                                                                : 0)
+                                                .withTargetDirection(latestAngleToHubTargetCenter)))
                                 .onFalse(drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-joystick.getLeftY()
                                                                 * MAX_SPEED)
@@ -256,22 +252,6 @@ public final class RobotContainer implements RobotMethods {
         }
 
         public void registerNamedCommands() {
-                NamedCommands.registerCommand("shootaim",
-                                new ParallelCommandGroup(
-                                                new ShootAtCalculatedVelocityTimed(shooter, indexer,
-                                                                vision, 10, shooter, indexer, vision),
-                                                drivetrain.applyRequest(() -> {
-                                                        final Rotation2d target = vision
-                                                                        .calculateRobotOffsetToTargetCenter(
-                                                                                        drivetrain.getState().Pose
-                                                                                                        .getRotation());
-
-                                                        return aiming.withTargetDirection(target);
-                                                })));
-
-                NamedCommands.registerCommand("intake", new IntakeTimed(intake, indexer, 4, intake, indexer));
-
-                NamedCommands.registerCommand("aim", new AimTimed(drivetrain, vision, aiming, drive, 1, drivetrain));
         }
 
         @Override
@@ -282,7 +262,8 @@ public final class RobotContainer implements RobotMethods {
                 }
 
                 // always be tracking the latest angle we need to aim the robot at
-                latestAngleToHubTargetCenter = vision.calculateRobotOffsetToTargetCenter(drivetrain.getPose().getRotation());
+                latestAngleToHubTargetCenter = vision
+                                .calculateRobotOffsetToTargetCenter(drivetrain.getPose().getRotation());
         }
 
         @Override

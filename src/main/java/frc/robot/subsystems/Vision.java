@@ -48,14 +48,10 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         lightcon.withCANdleFeatures(
                 new CANdleFeaturesConfigs()
                         .withStatusLedWhenActive(StatusLedWhenActiveValue.Enabled)
-                        .withVBatOutputMode(VBatOutputModeValue.Modulated)
-                )
-                        .withLED(
-                                new LEDConfigs().withBrightnessScalar(
-                                        1
-                                ).withStripType(StripTypeValue.RGB)
-                        );
-
+                        .withVBatOutputMode(VBatOutputModeValue.Modulated))
+                .withLED(
+                        new LEDConfigs().withBrightnessScalar(
+                                1).withStripType(StripTypeValue.RGB));
 
         statusLED.getConfigurator().apply(lightcon);
 
@@ -189,27 +185,21 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         statusLED.setControl(
                 new SolidColor(Constants.Vision.LED_START, Constants.Vision.LED_END)
                         .withColor(
-                                new RGBWColor(255, 0, 0)
-                        )
-        );
+                                new RGBWColor(255, 0, 0)));
     }
 
     private void setLEDToYellow() {
         statusLED.setControl(
                 new SolidColor(Constants.Vision.LED_START, Constants.Vision.LED_END)
                         .withColor(
-                                new RGBWColor(255, 255, 0)
-                        )
-        );
+                                new RGBWColor(255, 255, 0)));
     }
 
     private void setLEDToGreen() {
         statusLED.setControl(
                 new SolidColor(Constants.Vision.LED_START, Constants.Vision.LED_END)
                         .withColor(
-                                new RGBWColor(0, 255, 0)
-                        )
-        );
+                                new RGBWColor(0, 255, 0)));
     }
 
     @Override
@@ -256,8 +246,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
                                 Constants.Vision.CAMERA_HEIGHT_METERS,
                                 Constants.FieldConstants.APRILTAG_HUB_HEIGHTS_METERS,
                                 Constants.Vision.CAMERA_PITCH_RADIANS,
-                                Units.degreesToRadians(target.getPitch())
-                        );
+                                Units.degreesToRadians(target.getPitch()));
 
                         // we see wanted targets and therefore can work with them
                         // set LEDs to green
@@ -267,7 +256,8 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
                     } else {
 
-                        // if we see the targets, but they aren't the ones we want set the status to yellow
+                        // if we see the targets, but they aren't the ones we want set the status to
+                        // yellow
                         setLEDToYellow();
                     }
 

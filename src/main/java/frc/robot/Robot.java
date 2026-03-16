@@ -38,7 +38,7 @@ public final class Robot extends TimedRobot {
     public void disabledInit() {
         robotContainer.disabledInit();
 
-       CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().cancelAll();
     }
 
     @Override

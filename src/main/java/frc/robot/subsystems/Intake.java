@@ -41,8 +41,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
                 .withMotorOutput(
                         new MotorOutputConfigs()
                                 .withNeutralMode(NeutralModeValue.Brake)
-                                .withInverted(InvertedValue.CounterClockwise_Positive)
-                                )
+                                .withInverted(InvertedValue.CounterClockwise_Positive))
                 .withSlot0(
                         new Slot0Configs()
                                 .withKP(Constants.Intake.P)
@@ -99,7 +98,6 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         };
     }
 
-    
     public Runnable runPivotRawIn() {
         return () -> {
             pivotMotor.set(0.09);

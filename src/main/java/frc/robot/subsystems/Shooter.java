@@ -47,9 +47,8 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
 
         left.getConfigurator().apply(config);
         right.getConfigurator().apply(config.withMotorOutput(
-            new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
-            .withNeutralMode(NeutralModeValue.Coast)
-        ));
+                new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
+                        .withNeutralMode(NeutralModeValue.Coast)));
 
         left.getConfigurator().apply(shooterConfigs);
 
@@ -94,6 +93,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         SmartDashboard.putNumber("Left Velocity: ", left.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Right Velocity: ", right.getVelocity().getValueAsDouble());
 
-        SmartDashboard.putNumber("Shooter Power: ", (left.getVelocity().getValueAsDouble() / Constants.Shooter.SHOOTER_MAX_RPS) * 100);
+        SmartDashboard.putNumber("Shooter Power: ",
+                (left.getVelocity().getValueAsDouble() / Constants.Shooter.SHOOTER_MAX_RPS) * 100);
     }
 }
