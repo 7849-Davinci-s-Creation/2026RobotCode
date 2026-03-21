@@ -191,11 +191,11 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
                                 new RGBWColor(255, 0, 0)));
     }
 
-    private void setLEDToYellow() {
+    private void setLEDToBlue() {
         statusLED.setControl(
                 new SolidColor(Constants.Vision.LED_START, Constants.Vision.LED_END)
                         .withColor(
-                                new RGBWColor(255, 255, 0)));
+                                new RGBWColor(0, 0, 255)));
     }
 
     private void setLEDToGreen() {
@@ -225,7 +225,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
             // if there are results but no targets set to yellow
             if (!result.hasTargets()) {
-                setLEDToYellow();
+                setLEDToBlue();
             }
 
             if (result.hasTargets()) {
@@ -256,7 +256,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
                         // if we see the targets, but they aren't the ones we want set the status to
                         // yellow
-                        setLEDToYellow();
+                        setLEDToBlue();
                     }
 
                 }
@@ -264,7 +264,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
             }
 
         } else {
-            setLEDToYellow();
+            setLEDToBlue();
         }
 
         SmartDashboard.putNumber("Cached Distances: ", cachedDistance);

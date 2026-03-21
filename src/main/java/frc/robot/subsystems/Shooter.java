@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -32,7 +33,9 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
 
         final TalonFXConfiguration config = new TalonFXConfiguration()
                 .withMotorOutput(
-                        new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
+                        new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast))
+                .withCurrentLimits(
+                        new CurrentLimitsConfigs().withStatorCurrentLimit(100).withStatorCurrentLimitEnable(true));
 
         final Slot0Configs shooterConfigs = new Slot0Configs()
                 .withKP(Constants.Shooter.P)

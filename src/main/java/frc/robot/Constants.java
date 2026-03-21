@@ -37,11 +37,11 @@ public final class Constants {
 
     public static final class Shooter {
         // set these
-        public static final int LEFT_KRAKEN_CANID = 30;
-        public static final int RIGHT_KRAKEN_CANID = 34;
+        public static final int LEFT_KRAKEN_CANID = 57;
+        public static final int RIGHT_KRAKEN_CANID = 30;
 
         // find these
-        public static final double P = 0.57;
+        public static final double P = 10;
         public static final double I = 0;
         public static final double D = 0;
         public static final double S = 0;
@@ -57,11 +57,18 @@ public final class Constants {
 
     public static final class Indexer {
         public static final int STAGE1_MOTOR_PORT = 50;
+        public static final int FEEDER_MOTOR_PORT = 45;
+
+        public static final double FEEDER_P = 10;
+        public static final double FEEDER_A = 0.1;
+        public static final double FEEDER_V = 0.1;
     }
 
     public static final class Intake {
-        public static final int INTAKE_MOTOR_PORT = 53;
-        public static final int PIVOT_MOTOR_PORT = 33;
+        public static final int INTAKE_MOTOR_PORT = 54;
+        public static final int LEFT_PIVOT_MOTOR_PORT = 33;
+        public static final int RIGHT_PIVOT_MOTOR_PORT = 61;
+
 
         public static final double P = 0;
         public static final double I = 0;
@@ -76,9 +83,9 @@ public final class Constants {
         public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(27);
         public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(60);
 
-        public static final int CANDLE_ID = 0;
+        public static final int CANDLE_ID = 60;
         public static final int LED_START = 0;
-        public static final int LED_END = 1;
+        public static final int LED_END = 39;
     }
 
     public static final class FieldConstants {

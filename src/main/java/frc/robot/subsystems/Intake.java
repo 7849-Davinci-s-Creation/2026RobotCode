@@ -28,11 +28,13 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
 
     public IntakeState currentState;
 
-    private final TalonFX pivotMotor;
+    private final TalonFX leftPivotMotor;
+    private final TalonFX rightPivotMotor;
     private final WPI_VictorSPX intakeMotor;
 
     private Intake() {
-        this.pivotMotor = new TalonFX(Constants.Intake.PIVOT_MOTOR_PORT);
+        this.leftPivotMotor = new TalonFX(Constants.Intake.RIGHT_PIVOT_MOTOR_PORT);
+        this.rightPivotMotor = new TalonFX(Constants.Intake.RIGHT_PIVOT_MOTOR_PORT);
         this.intakeMotor = new WPI_VictorSPX(Constants.Intake.INTAKE_MOTOR_PORT);
 
         this.currentState = IntakeState.IN;
@@ -50,7 +52,8 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
                                 .withKS(Constants.Intake.S)
                                 .withKV(Constants.Intake.V));
 
-        pivotMotor.getConfigurator().apply(configs);
+        leftPivotMotor.getConfigurator().apply(configs);
+        rightPivotMotor.getConfigurator().apply(configs);
     };
 
     public Runnable intake() {
@@ -66,14 +69,15 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     }
 
     public Runnable zeroPivot() {
-        return () -> pivotMotor.setPosition(0);
+        return () -> leftPivotMotor.setPosition(0);
     }
 
     public Runnable deploy() {
         return () -> {
             if (currentState == IntakeState.IN) {
                 final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
-                pivotMotor.setControl(voltage);
+                leftPivotMotor.setControl(voltage);
+                rightPivotMotor.setControl(voltage);
 
                 currentState = IntakeState.OUT;
             }
@@ -84,7 +88,8 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         return () -> {
             if (currentState == IntakeState.OUT) {
                 final PositionVoltage voltage = new PositionVoltage(1).withSlot(0).withPosition(Degrees.of(0));
-                pivotMotor.setControl(voltage);
+                leftPivotMotor.setControl(voltage);
+                rightPivotMotor.setControl(voltage);
 
                 currentState = IntakeState.IN;
             }
@@ -93,20 +98,37 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
 
     public Runnable runPivotRawOut() {
         return () -> {
-            pivotMotor.set(-0.09);
+            leftPivotMotor.set(-0.09);
+            rightPivotMotor.set(-0.09);
             currentState = IntakeState.OUT;
         };
     }
 
     public Runnable runPivotRawIn() {
         return () -> {
-            pivotMotor.set(0.09);
+            leftPivotMotor.set(0.09);
+            rightPivotMotor.set(0.09);
             currentState = IntakeState.IN;
         };
     }
 
     public Runnable stopPivot() {
-        return pivotMotor::stopMotor;
+        return () -> {
+            leftPivotMotor.stopMotor();
+            rightPivotMotor.stopMotor();
+        };
+    }
+
+    public Runnable runLeftAlone() {
+        return () -> leftPivotMotor.set(0.09);
+    }
+
+    public Runnable runRightAlone() {
+        return () -> rightPivotMotor.set(0.09);
+    }
+
+    public IntakeState getState() {
+        return currentState;
     }
 
     @Override
@@ -118,7 +140,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     public void periodic() {
         SmartDashboard.putString("Intake State", currentState.toString());
 
-        SmartDashboard.putNumber("Intake Position", pivotMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Intake Position", leftPivotMotor.getPosition().getValueAsDouble());
     }
 
     public enum IntakeState {

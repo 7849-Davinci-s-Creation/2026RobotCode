@@ -134,83 +134,91 @@ public final class RobotContainer implements RobotMethods {
                 joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
                 // Slight creep mode
-                joystick.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
-                        drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED * SLIGHT_CREEP_NERF_DRIVE)
+                joystick.leftTrigger().whileTrue(drivetrain.applyRequest(() -> drive
+                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED * SLIGHT_CREEP_NERF_DRIVE)
                                 .withVelocityY(-joystick.getLeftX() * MAX_SPEED * SLIGHT_CREEP_NERF_DRIVE)
-                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE * SLIGHT_CREEP_NERF_ROTATE)));
+                                .withRotationalRate(
+                                                -joystick.getRightX() * MAX_ANGULAR_RATE * SLIGHT_CREEP_NERF_ROTATE)));
 
                 // Major creep mode
-                joystick.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
-                        drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED * MAJOR_CREEP_NERF_DRIVE)
+                joystick.rightTrigger().whileTrue(drivetrain.applyRequest(() -> drive
+                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED * MAJOR_CREEP_NERF_DRIVE)
                                 .withVelocityY(-joystick.getLeftX() * MAX_SPEED * MAJOR_CREEP_NERF_DRIVE)
-                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE * MAJOR_CREEP_NERF_ROTATE)));
+                                .withRotationalRate(
+                                                -joystick.getRightX() * MAX_ANGULAR_RATE * MAJOR_CREEP_NERF_ROTATE)));
 
                 // Aim drivetrain at hub target
                 joystick.a()
-                        .whileTrue(drivetrain.applyRequest(() ->
-                                aiming.withVelocityX(Math.abs(joystick.getLeftY()) > 0.1 ? -joystick.getLeftY() * Constants.DriveTrain.AIM_MOVEMENT_NERF : 0)
-                                        .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1 ? -joystick.getLeftX() * Constants.DriveTrain.AIM_MOVEMENT_NERF : 0)
-                                        .withTargetDirection(latestAngleToHubTargetCenter)))
-                        .onFalse(drivetrain.applyRequest(() ->
-                                drive.withVelocityX(-joystick.getLeftY() * MAX_SPEED)
-                                        .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
-                                        .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE)));
+                                .whileTrue(drivetrain.applyRequest(() -> aiming
+                                                .withVelocityX(Math.abs(joystick.getLeftY()) > 0.1
+                                                                ? -joystick.getLeftY()
+                                                                                * Constants.DriveTrain.AIM_MOVEMENT_NERF
+                                                                : 0)
+                                                .withVelocityY(Math.abs(joystick.getLeftX()) > 0.1
+                                                                ? -joystick.getLeftX()
+                                                                                * Constants.DriveTrain.AIM_MOVEMENT_NERF
+                                                                : 0)
+                                                .withTargetDirection(latestAngleToHubTargetCenter)))
+                                .onFalse(drivetrain.applyRequest(() -> drive
+                                                .withVelocityX(-joystick.getLeftY() * MAX_SPEED)
+                                                .withVelocityY(-joystick.getLeftX() * MAX_SPEED)
+                                                .withRotationalRate(-joystick.getRightX() * MAX_ANGULAR_RATE)));
 
                 // ── Operator Controls ──────────────────────────────────────────────────────
 
                 // Shoot at calculated velocity
                 operator.a()
-                        .whileTrue(new ShootAtCalculatedVelocity(shooter, indexer, vision))
-                        .onFalse(new ParallelCommandGroup(
-                                Commands.runOnce(shooter.stop()),
-                                Commands.runOnce(indexer.stage1Off())));
+                                .whileTrue(new ShootAtCalculatedVelocity(shooter, indexer, vision))
+                                .onFalse(new ParallelCommandGroup(
+                                                Commands.runOnce(shooter.stop()),
+                                                Commands.runOnce(indexer.stage1Off())));
 
                 // Shooter velocity presets
                 operator.leftBumper()
-                        .whileTrue(Commands.run(shooter.setVelocity(Constants.Shooter.SHOOTER_MAX_RPS)))
-                        .onFalse(Commands.run(shooter.stop()));
+                                .whileTrue(Commands.run(shooter.setVelocity(Constants.Shooter.SHOOTER_MAX_RPS)))
+                                .onFalse(Commands.run(shooter.stop()));
 
                 operator.rightBumper()
-                        .whileTrue(Commands.run(shooter.setVelocity(Constants.Shooter.HALF_FIELD_RPS)))
-                        .onFalse(Commands.run(shooter.stop()));
+                                .whileTrue(Commands.run(shooter.setVelocity(Constants.Shooter.HALF_FIELD_RPS)))
+                                .onFalse(Commands.run(shooter.stop()));
 
                 operator.leftStick()
-                        .whileTrue(Commands.run(shooter.setVelocity(-10)))
-                        .onFalse(Commands.run(shooter.stop()));
+                                .whileTrue(Commands.run(shooter.setVelocity(-10)))
+                                .onFalse(Commands.run(shooter.stop()));
 
                 // Indexer stage 1 (POV left & up both trigger oscillation)
                 operator.povLeft()
-                        .whileTrue(Commands.run(indexer.oscillateStage1()))
-                        .onFalse(Commands.run(indexer.stage1Off()));
+                                .whileTrue(Commands.run(indexer.oscillateStage1()))
+                                .onFalse(Commands.run(indexer.stage1Off()));
 
                 // Intake controls
                 operator.povRight()
-                        .whileTrue(Commands.run(intake.intake()))
-                        .onFalse(Commands.run(intake.stopIntake()));
+                                .whileTrue(Commands.run(intake.intake()))
+                                .onFalse(Commands.run(intake.stopIntake()));
 
                 operator.povDown()
-                        .whileTrue(Commands.run(intake.outake()))
-                        .onFalse(Commands.run(intake.stopIntake()));
+                                .whileTrue(Commands.run(intake.outake()))
+                                .onFalse(Commands.run(intake.stopIntake()));
 
                 // Intake + indexer together
                 operator.b()
-                        .whileTrue(new ParallelCommandGroup(
-                                Commands.run(intake.intake()),
-                                Commands.run(indexer.oscillateStage1())))
-                        .onFalse(new ParallelCommandGroup(
-                                Commands.run(intake.stopIntake()),
-                                Commands.run(indexer.stage1Off())));
+                                .whileTrue(Commands.run(intake.intake()))
+                                .onFalse(Commands.run(intake.stopIntake()));
 
                 // Intake pivot manual control
                 operator.back()
-                        .whileTrue(Commands.run(intake.runPivotRawIn()))
-                        .onFalse(Commands.run(intake.stopPivot()));
+                                .whileTrue(Commands.run(intake.runPivotRawIn()))
+                                .onFalse(Commands.run(intake.stopPivot()));
 
                 operator.rightStick()
-                        .whileTrue(Commands.run(intake.runPivotRawOut()))
-                        .onFalse(Commands.run(intake.stopPivot()));
+                                .whileTrue(Commands.run(intake.runPivotRawOut()))
+                                .onFalse(Commands.run(intake.stopPivot()));
 
                 operator.povUp().onTrue(Commands.run(intake.zeroPivot()));
+
+                operator.rightTrigger()
+                                .whileTrue(Commands.run(intake.runLeftAlone()))
+                                .onFalse(Commands.run(intake.stopPivot()));
         }
 
         public Command getAutonomousCommand() {
