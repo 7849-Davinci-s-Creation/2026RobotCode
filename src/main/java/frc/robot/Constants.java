@@ -75,6 +75,9 @@ public final class Constants {
         public static final double D = 0;
         public static final double S = 0;
         public static final double V = 0;
+
+        public static final double intakeOutRotations = 0;
+        public static final double intakeInRotations = 0;
     }
 
     public static final class Vision {

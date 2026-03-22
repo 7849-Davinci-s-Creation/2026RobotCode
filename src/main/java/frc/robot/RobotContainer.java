@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.cmds.PivotIntake;
 import frc.robot.cmds.ShootAtCalculatedVelocity;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
@@ -214,11 +215,9 @@ public final class RobotContainer implements RobotMethods {
                                 .whileTrue(Commands.run(intake.runPivotRawOut()))
                                 .onFalse(Commands.run(intake.stopPivot()));
 
-                operator.povUp().onTrue(Commands.run(intake.zeroPivot()));
+                operator.povUp().onTrue(Commands.runOnce(intake.zeroPivot()));
 
-                operator.rightTrigger()
-                                .whileTrue(Commands.run(intake.runLeftAlone()))
-                                .onFalse(Commands.run(intake.stopPivot()));
+                // operator.x().onTrue(new PivotIntake(intake.getState(), intake));
         }
 
         public Command getAutonomousCommand() {

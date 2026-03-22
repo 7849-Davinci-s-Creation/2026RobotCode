@@ -215,6 +215,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         // if camera is not connect display red
         if (!camera.isConnected()) {
             setLEDToRed();
+            return;
         }
 
         var results = camera.getAllUnreadResults();
@@ -226,6 +227,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
             // if there are results but no targets set to yellow
             if (!result.hasTargets()) {
                 setLEDToBlue();
+                return;
             }
 
             if (result.hasTargets()) {
@@ -249,9 +251,6 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
                         // we see wanted targets and therefore can work with them
                         // set LEDs to green
                         setLEDToGreen();
-
-                        break;
-
                     } else {
 
                         // if we see the targets, but they aren't the ones we want set the status to
@@ -265,6 +264,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
         } else {
             setLEDToBlue();
+            return;
         }
 
         SmartDashboard.putNumber("Cached Distances: ", cachedDistance);
