@@ -4,9 +4,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,9 +33,11 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     private final WPI_VictorSPX intakeMotor;
 
     private Intake() {
-        this.leftPivotMotor = new TalonFX(Constants.Intake.RIGHT_PIVOT_MOTOR_PORT);
+        this.leftPivotMotor = new TalonFX(Constants.Intake.LEFT_PIVOT_MOTOR_PORT);
         this.rightPivotMotor = new TalonFX(Constants.Intake.RIGHT_PIVOT_MOTOR_PORT);
         this.intakeMotor = new WPI_VictorSPX(Constants.Intake.INTAKE_MOTOR_PORT);
+
+        this.intakeMotor.setInverted(true);
 
         this.currentState = IntakeState.IN;
 
@@ -50,7 +54,8 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
                                 .withKV(Constants.Intake.V));
 
         leftPivotMotor.getConfigurator().apply(
-                configs.withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)));
+                configs.withMotorOutput(
+                        new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)));
         rightPivotMotor.getConfigurator().apply(configs);
     };
 
@@ -73,14 +78,19 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     public Runnable setPivotPositionControl(PositionVoltage request) {
         return () -> {
             leftPivotMotor.setControl(request);
-            rightPivotMotor.setControl(request);
+
+            rightPivotMotor
+                    .setControl(new Follower(Constants.Intake.LEFT_PIVOT_MOTOR_PORT, MotorAlignmentValue.Opposed));
+
         };
     }
 
     public Runnable runPivotRawOut() {
         return () -> {
             leftPivotMotor.set(0.09);
-            rightPivotMotor.set(0.09);
+            rightPivotMotor
+                    .setControl(new Follower(Constants.Intake.LEFT_PIVOT_MOTOR_PORT, MotorAlignmentValue.Opposed));
+
             currentState = IntakeState.OUT;
         };
     }
@@ -88,7 +98,9 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     public Runnable runPivotRawIn() {
         return () -> {
             leftPivotMotor.set(-0.09);
-            rightPivotMotor.set(-0.09);
+            rightPivotMotor
+                    .setControl(new Follower(Constants.Intake.LEFT_PIVOT_MOTOR_PORT, MotorAlignmentValue.Opposed));
+
             currentState = IntakeState.IN;
         };
     }
@@ -100,17 +112,10 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         };
     }
 
-    public Runnable runLeftAlone() {
-        return () -> leftPivotMotor.set(0.09);
-    }
-
-    public Runnable runRightAlone() {
-        return () -> rightPivotMotor.set(0.09);
-    }
-
     public void setCurrentState(IntakeState state) {
         currentState = state;
     }
+
     public IntakeState getState() {
         return currentState;
     }

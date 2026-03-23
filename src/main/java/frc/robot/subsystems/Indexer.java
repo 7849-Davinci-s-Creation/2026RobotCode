@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -7,6 +8,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,7 +34,7 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
 
     private Indexer() {
         stage1 = new WPI_VictorSPX(Constants.Indexer.STAGE1_MOTOR_PORT);
-        stage1.setInverted(false);
+        stage1.setInverted(true);
 
         feeder = new TalonFX(Constants.Indexer.FEEDER_MOTOR_PORT);
 
@@ -40,7 +42,8 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
                 .withKA(Constants.Indexer.FEEDER_A).withKV(Constants.Indexer.FEEDER_V);
 
         final TalonFXConfiguration config = new TalonFXConfiguration().withSlot0(feederPID)
-                .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
+                .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake)
+                        .withInverted(InvertedValue.Clockwise_Positive))
                 .withCurrentLimits(
                         new CurrentLimitsConfigs().withStatorCurrentLimit(90).withStatorCurrentLimitEnable(true));
 
@@ -64,9 +67,8 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
             if (!oscillateTimer.isRunning()) {
                 oscillateTimer.start();
             }
-
-            // Run backwards every 50ms
-            double speed = (((int) (oscillateTimer.get() * 1000)) % 100 < 50) ? 1 : -0.75;
+            // 2000ms forward, 300ms backward, repeat every 2300ms
+            double speed = (((int) (oscillateTimer.get() * 1000)) % 2300 < 2000) ? 1 : -0.80;
             stage1.set(speed);
         };
     }
@@ -82,6 +84,12 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
     public Runnable runFeederBack() {
         return () -> {
             feeder.set(-0.5);
+        };
+    }
+
+    public Runnable stopFeeder() {
+        return () -> {
+            feeder.stopMotor();
         };
     }
 

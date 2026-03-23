@@ -192,11 +192,6 @@ public final class RobotContainer implements RobotMethods {
                                 .whileTrue(Commands.run(indexer.oscillateStage1()))
                                 .onFalse(Commands.run(indexer.stage1Off()));
 
-                // Intake controls
-                operator.povRight()
-                                .whileTrue(Commands.run(intake.intake()))
-                                .onFalse(Commands.run(intake.stopIntake()));
-
                 operator.povDown()
                                 .whileTrue(Commands.run(intake.outake()))
                                 .onFalse(Commands.run(intake.stopIntake()));
@@ -217,7 +212,10 @@ public final class RobotContainer implements RobotMethods {
 
                 operator.povUp().onTrue(Commands.runOnce(intake.zeroPivot()));
 
-                // operator.x().onTrue(new PivotIntake(intake.getState(), intake));
+                operator.povRight().whileTrue(Commands.run(indexer.runFeeder(40)))
+                                .onFalse(Commands.run(indexer.stopFeeder()));
+
+                operator.x().onTrue(new PivotIntake(intake));
         }
 
         public Command getAutonomousCommand() {

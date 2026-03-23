@@ -4,9 +4,11 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,7 +52,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
 
         left.getConfigurator().apply(config);
         right.getConfigurator().apply(config.withMotorOutput(
-                new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
+                new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Coast)));
 
         left.getConfigurator().apply(shooterConfigs);
@@ -64,7 +66,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
                     .withSlot(0);
 
             left.setControl(request);
-            right.setControl(request);
+            right.setControl(new Follower(Constants.Shooter.LEFT_KRAKEN_CANID, MotorAlignmentValue.Opposed));
         };
     }
 
@@ -78,7 +80,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
     public Runnable runFullSpeedRaw() {
         return () -> {
             left.set(1);
-            right.set(1);
+            right.setControl(new Follower(Constants.Shooter.LEFT_KRAKEN_CANID, MotorAlignmentValue.Opposed));
         };
     }
 
