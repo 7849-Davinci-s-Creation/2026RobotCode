@@ -50,7 +50,7 @@ public class PivotIntake extends Command {
         if (initialState.equals(Intake.IntakeState.IN)) {
             return intake.getPivotPosition() >= Constants.Intake.intakeOutRotations;
         } else {
-            return intake.getPivotPosition() <= Constants.Intake.intakeInRotations;
+            return intake.getPivotPosition() <= 4;
         }
     }
 }

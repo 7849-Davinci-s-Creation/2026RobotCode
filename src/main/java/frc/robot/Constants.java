@@ -59,7 +59,7 @@ public final class Constants {
         public static final int STAGE1_MOTOR_PORT = 51;
         public static final int FEEDER_MOTOR_PORT = 45;
 
-        public static final double FEEDER_P = 0.3;
+        public static final double FEEDER_P = 0.4;
         public static final double FEEDER_A = 0.1;
         public static final double FEEDER_V = 0.1;
     }
@@ -70,14 +70,14 @@ public final class Constants {
         public static final int RIGHT_PIVOT_MOTOR_PORT = 61;
 
 
-        public static final double P = 0.4;
-        public static final double I = 0;
+        public static final double P = 0.6;
+        public static final double I = 0.0;
         public static final double D = 0;
         public static final double S = 0.1;
-        public static final double V = 0;
+        public static final double V = 0.2;
 
-        public static final double intakeOutRotations = 19;
-        public static final double intakeInRotations = 2;
+        public static final double intakeOutRotations = 18;
+        public static final double intakeInRotations = 3;
     }
 
     public static final class Vision {

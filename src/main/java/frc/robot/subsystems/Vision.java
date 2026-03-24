@@ -39,6 +39,8 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
     private double cachedDistance = 0;
 
+    private boolean hasValidTargets = false;
+
     private Vision() {
         camera = new PhotonCamera(Constants.Vision.CAMERA_NAME);
 
@@ -183,6 +185,10 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
 
         return Constants.Shooter.DEFAULT_RPS;
     }
+    
+    public boolean hasValidTargets() {
+        return hasValidTargets;
+    }
 
     private void setLEDToRed() {
         statusLED.setControl(
@@ -215,6 +221,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
         // if camera is not connect display red
         if (!camera.isConnected()) {
             setLEDToRed();
+            hasValidTargets = false;
             return;
         }
 
@@ -227,6 +234,7 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
             // if there are results but no targets set to yellow
             if (!result.hasTargets()) {
                 setLEDToBlue();
+                hasValidTargets = false;
                 return;
             }
 
@@ -251,11 +259,13 @@ public final class Vision extends SubsystemBase implements NiceSubsytem {
                         // we see wanted targets and therefore can work with them
                         // set LEDs to green
                         setLEDToGreen();
+                        hasValidTargets = true;
                     } else {
 
                         // if we see the targets, but they aren't the ones we want set the status to
                         // yellow
                         setLEDToBlue();
+                        hasValidTargets = false;
                     }
 
                 }

@@ -50,9 +50,11 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
         left.clearStickyFaults();
         right.clearStickyFaults();
 
-        left.getConfigurator().apply(config);
+        left.getConfigurator().apply(config.withMotorOutput(
+                new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
+                        .withNeutralMode(NeutralModeValue.Coast)));
         right.getConfigurator().apply(config.withMotorOutput(
-                new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
+                new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Coast)));
 
         left.getConfigurator().apply(shooterConfigs);
