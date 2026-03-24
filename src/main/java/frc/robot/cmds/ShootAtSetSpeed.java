@@ -7,17 +7,17 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 
-public class ShootAtCalculatedVelocity extends Command {
+public class ShootAtSetSpeed extends Command {
     private final Shooter shooter;
     private final Indexer indexer;
-    private final Vision vision;
+    private final double rps;
 
-    public ShootAtCalculatedVelocity(Shooter shooter, Indexer indexer, Vision vision) {
+    public ShootAtSetSpeed(Shooter shooter, Indexer indexer, double rps) {
         this.shooter = shooter;
         this.indexer = indexer;
-        this.vision = vision;
+        this.rps = rps;
 
-        addRequirements(shooter, vision, indexer);
+        addRequirements(shooter, indexer);
     }
 
     @Override
@@ -28,24 +28,9 @@ public class ShootAtCalculatedVelocity extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double distance;
-        double wantedRPS;
+        shooter.setVelocity(rps).run();
 
-        if (vision.hasValidTargets()) {
-            distance = vision.calculateDistanceFromHubTarget();
-            wantedRPS = vision.getVelocityFromTagDistance(distance);
-        } else {
-            distance = 0;
-            wantedRPS = Constants.Shooter.SIDE_HUB_SHOT_RPS;
-        }
-
-        SmartDashboard.putNumber("Read Tag Distance", distance);
-
-        SmartDashboard.putNumber("Wanted RPS", wantedRPS);
-
-        shooter.setVelocity(wantedRPS).run();
-
-        if (shooter.getRPS() >= wantedRPS) {
+        if (shooter.getRPS() >= rps) {
             indexer.oscillateStage1().run();
             indexer.runFeeder(40).run();
         }
@@ -65,3 +50,4 @@ public class ShootAtCalculatedVelocity extends Command {
     }
 
 }
+

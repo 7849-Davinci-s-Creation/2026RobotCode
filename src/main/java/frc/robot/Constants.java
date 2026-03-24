@@ -41,7 +41,7 @@ public final class Constants {
         public static final int RIGHT_KRAKEN_CANID = 30;
 
         // find these
-        public static final double P = 3;
+        public static final double P = 10;
         public static final double I = 0;
         public static final double D = 0;
         public static final double S = 0;
@@ -53,6 +53,8 @@ public final class Constants {
 
         // default shooting position rps
         public static final double DEFAULT_RPS = 25;
+
+        public static final double SIDE_HUB_SHOT_RPS = 0;
     }
 
     public static final class Indexer {

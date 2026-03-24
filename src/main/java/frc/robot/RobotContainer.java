@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.cmds.PivotIntake;
 import frc.robot.cmds.ShootAtCalculatedVelocity;
+import frc.robot.cmds.ShootAtSetSpeed;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import lib.RobotMethods;
@@ -172,16 +173,25 @@ public final class RobotContainer implements RobotMethods {
                                 .whileTrue(new ShootAtCalculatedVelocity(shooter, indexer, vision))
                                 .onFalse(new ParallelCommandGroup(
                                                 Commands.runOnce(shooter.stop()),
-                                                Commands.runOnce(indexer.stage1Off())));
+                                                Commands.runOnce(indexer.stage1Off()),
+                                                Commands.runOnce(indexer.stopFeeder())));
 
                 // Shooter velocity presets
                 operator.leftBumper()
-                                .whileTrue(Commands.run(shooter.setVelocity(Constants.Shooter.SHOOTER_MAX_RPS)))
-                                .onFalse(Commands.run(shooter.stop()));
+                                .whileTrue(new ShootAtSetSpeed(shooter, indexer, Constants.Shooter.SHOOTER_MAX_RPS))
+                                .onFalse(
+                                                new ParallelCommandGroup(
+                                                                Commands.runOnce(shooter.stop()),
+                                                                Commands.runOnce(indexer.stage1Off()),
+                                                                Commands.runOnce(indexer.stopFeeder())));
 
                 operator.rightBumper()
-                                .whileTrue(Commands.run(shooter.setVelocity(Constants.Shooter.HALF_FIELD_RPS)))
-                                .onFalse(Commands.run(shooter.stop()));
+                                .whileTrue(new ShootAtSetSpeed(shooter, indexer, Constants.Shooter.HALF_FIELD_RPS))
+                                .onFalse(
+                                                new ParallelCommandGroup(
+                                                                Commands.runOnce(shooter.stop()),
+                                                                Commands.runOnce(indexer.stage1Off()),
+                                                                Commands.runOnce(indexer.stopFeeder())));
 
                 operator.leftStick()
                                 .whileTrue(Commands.run(shooter.setVelocity(-10)))
