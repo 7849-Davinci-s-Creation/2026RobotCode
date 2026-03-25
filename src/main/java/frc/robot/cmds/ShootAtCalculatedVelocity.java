@@ -46,7 +46,7 @@ public class ShootAtCalculatedVelocity extends Command {
         shooter.setVelocity(wantedRPS).run();
 
         if (shooter.getRPS() >= wantedRPS) {
-            indexer.oscillateStage1().run();
+            indexer.stage1On().run();
             indexer.runFeeder(40).run();
         }
 

@@ -60,6 +60,10 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
         return () -> stage1.set(1);
     }
 
+    public Runnable stage1Back() {
+        return () -> stage1.set(-1);
+    }
+
     public Runnable stage1Off() {
         return () -> {
             oscillateTimer.stop();
@@ -73,9 +77,20 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
             if (!oscillateTimer.isRunning()) {
                 oscillateTimer.start();
             }
-            // 2000ms forward, 300ms backward, repeat every 2300ms
-            double speed = (((int) (oscillateTimer.get() * 1000)) % 2300 < 2000) ? 1 : -0.80;
-            stage1.set(speed);
+
+            int ms = (int) (oscillateTimer.get() * 1000);
+
+            // Full cycle: 2000ms forward oscillating 75-100%, then 200ms reverse
+            int phase = ms % 2200;
+
+            if (phase >= 2000) {
+                // Reverse kick for 200ms
+                stage1.set(-0.75);
+            } else {
+                // Oscillate between 75% and 100% every 400ms
+                double speed = (phase % 400 < 200) ? 1.0 : 0.75;
+                stage1.set(speed);
+            }
         };
     }
 

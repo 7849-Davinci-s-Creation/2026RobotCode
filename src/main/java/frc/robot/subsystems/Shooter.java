@@ -54,7 +54,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
                 new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Coast)));
         right.getConfigurator().apply(config.withMotorOutput(
-                new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
+                new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Coast)));
 
         left.getConfigurator().apply(shooterConfigs);
@@ -68,7 +68,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
                     .withSlot(0);
 
             left.setControl(request);
-            right.setControl(new Follower(Constants.Shooter.LEFT_KRAKEN_CANID, MotorAlignmentValue.Opposed));
+            right.setControl(request);
         };
     }
 
@@ -82,7 +82,7 @@ public final class Shooter extends SubsystemBase implements NiceSubsytem {
     public Runnable runFullSpeedRaw() {
         return () -> {
             left.set(1);
-            right.setControl(new Follower(Constants.Shooter.LEFT_KRAKEN_CANID, MotorAlignmentValue.Opposed));
+            right.set(1);
         };
     }
 

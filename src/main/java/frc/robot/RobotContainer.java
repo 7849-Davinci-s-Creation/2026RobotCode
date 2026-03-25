@@ -222,10 +222,14 @@ public final class RobotContainer implements RobotMethods {
 
                 operator.povUp().onTrue(Commands.runOnce(intake.zeroPivot()));
 
-                operator.povRight().whileTrue(Commands.run(indexer.runFeeder(40)))
+                operator.povRight().whileTrue(Commands.run(indexer.stage1Back()))
                                 .onFalse(Commands.run(indexer.stopFeeder()));
 
                 operator.x().onTrue(new PivotIntake(intake));
+
+                operator.rightTrigger().whileTrue(Commands.run(shooter.setVelocity(2))).onFalse(
+                        Commands.run(shooter.stop())
+                );
         }
 
         public Command getAutonomousCommand() {

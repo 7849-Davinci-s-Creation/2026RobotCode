@@ -1,11 +1,8 @@
 package frc.robot.cmds;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
 
 public class ShootAtSetSpeed extends Command {
     private final Shooter shooter;
@@ -31,7 +28,7 @@ public class ShootAtSetSpeed extends Command {
         shooter.setVelocity(rps).run();
 
         if (shooter.getRPS() >= rps) {
-            indexer.oscillateStage1().run();
+            indexer.stage1On().run();
             indexer.runFeeder(40).run();
         }
 
