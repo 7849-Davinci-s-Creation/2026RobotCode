@@ -27,6 +27,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     }
 
     public IntakeState currentState;
+    public BounceState bounceState;
 
     private final TalonFX leftPivotMotor;
     private final TalonFX rightPivotMotor;
@@ -40,6 +41,7 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         this.intakeMotor.setInverted(true);
 
         this.currentState = IntakeState.IN;
+        this.bounceState = BounceState.NOT;
 
         final TalonFXConfiguration configs = new TalonFXConfiguration()
                 .withMotorOutput(
@@ -83,6 +85,10 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
                     .setControl(new Follower(Constants.Intake.LEFT_PIVOT_MOTOR_PORT, MotorAlignmentValue.Opposed));
 
         };
+    }
+
+    public Runnable setBounceOff() {
+        return () -> bounceState = BounceState.NOT;
     }
 
     public Runnable runPivotRawOut() {
@@ -134,6 +140,13 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
         SmartDashboard.putString("Intake State", currentState.toString());
 
         SmartDashboard.putNumber("Intake Position", leftPivotMotor.getPosition().getValueAsDouble());
+
+        if (getPivotPosition() >= 20) {
+            setCurrentState(Intake.IntakeState.OUT);
+        } else if (getPivotPosition() <= 5) {
+            setCurrentState(Intake.IntakeState.IN);
+            zeroPivot();
+        }
     }
 
     public IntakeState getInType() {
@@ -147,5 +160,11 @@ public final class Intake extends SubsystemBase implements NiceSubsytem {
     public enum IntakeState {
         OUT,
         IN
+    }
+
+    public enum BounceState {
+        NOT,
+        UP,
+        DOWN
     }
 }

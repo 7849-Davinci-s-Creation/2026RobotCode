@@ -36,13 +36,6 @@ public class PivotIntake extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.stopPivot().run();
-
-        if (initialState.equals(Intake.IntakeState.IN)) {
-            intake.setCurrentState(Intake.IntakeState.OUT);
-        } else {
-            intake.setCurrentState(Intake.IntakeState.IN);
-            intake.zeroPivot();
-        }
     }
 
     @Override

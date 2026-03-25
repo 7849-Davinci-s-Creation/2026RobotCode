@@ -36,11 +36,11 @@ public final class Indexer extends SubsystemBase implements NiceSubsytem {
         stage1 = new WPI_VictorSPX(Constants.Indexer.STAGE1_MOTOR_PORT);
         stage1.setInverted(true);
 
-        // Cap output voltage to 8V (tune this down as needed)
-        VictorSPXConfiguration stage1Config = new VictorSPXConfiguration();
-        stage1Config.voltageCompSaturation = 8.0;
-        stage1.configAllSettings(stage1Config);
-        stage1.enableVoltageCompensation(true);
+        // // Cap output voltage to 8V (tune this down as needed)
+        // VictorSPXConfiguration stage1Config = new VictorSPXConfiguration();
+        // stage1Config.voltageCompSaturation = 8.0;
+        // stage1.configAllSettings(stage1Config);
+        // stage1.enableVoltageCompensation(true);
 
         feeder = new TalonFX(Constants.Indexer.FEEDER_MOTOR_PORT);
 
